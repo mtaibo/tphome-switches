@@ -27,13 +27,29 @@ PIN LIST:
 
     BUTTONS:
 
+      PIN 3:
+        - Position: Mid Button
+        - 1: Not pressed
+        - 0: Pressed
+
       PIN 5:
         - Position: Lower Button
+        - 1: Not pressed
+        - 0: Pressed
   
       PIN 12:
         - Position: Upper Button
+        - 1: Not pressed
+        - 0: Pressed
+
+    RELES:
+
+      PIN 13: L1 
+        - By default, it makes the blind close/go down
+      PIN 15: L3 
+        - By default, it makes the blind open/go up
 
     EXTRA:
       - PIN 1, 3: Transmiting and Receiving Pins
       - PIN 6-11: Probably Flash Memory Pins
-      - PIN 4, 13, 15: Unkown
+      - PIN 4: Unkown
