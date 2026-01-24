@@ -11,6 +11,7 @@ unsigned long time_pressed = 0;
 
 void setup() {
     Serial.begin(115200);
+    config_init();
 
     // Loop to turn every output pin to output mode
     for (int i=0; i<6; i++) {
@@ -37,7 +38,11 @@ void loop() {
 
         Serial.print("Boton soltado. Duracion: ");
         Serial.println(duration);
-        Serial.print(config.short_pulse, config.long_pulse);
+
+        Serial.print("Config - Corto: "); Serial.print(config.short_pulse);
+        Serial.print(" Largo: "); Serial.println(config.long_pulse);
+        Serial.print("Duracion detectada: "); Serial.println(duration);
+
 
         if (duration < config.short_pulse) {
             Serial.println("ACCION CORTA");
