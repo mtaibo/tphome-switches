@@ -26,19 +26,14 @@ void setup() {
 }
 
 void loop() {
-
     unsigned long durationTop = btnTop.checkPulse();
-    if (durationTop > 0) {
-        handleButtonAction(BTN_TOP, durationTop);
-    }
-
+    if (durationTop > 0) handleButtonAction(BTN_TOP, durationTop);
+    
     unsigned long durationMid = btnMid.checkPulse();
-    if (durationMid > 0) {
-        handleButtonAction(BTN_MID, durationMid);
-    }
+    if (durationMid > 0) handleButtonAction(BTN_MID, durationMid);
 
     unsigned long durationBottom = btnBottom.checkPulse();
-    if (durationBottom > 0) {
-        handleButtonAction(BTN_BOTTOM, durationBottom);
-    }
+    if (durationBottom > 0) handleButtonAction(BTN_BOTTOM, durationBottom);
+
+    updateActions();
 }
