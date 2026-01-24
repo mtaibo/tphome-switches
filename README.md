@@ -42,7 +42,7 @@ PIN LIST:
         - 1: Not pressed
         - 0: Pressed
 
-    RELES:
+    RELAYS:
 
       PIN 13: L1 
         - By default, it makes the blind close/go down
