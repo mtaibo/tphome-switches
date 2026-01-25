@@ -1,14 +1,15 @@
-#ifndef CONFIG_MANAGER_H
-#define CONFIG_MANAGER_H
+#ifndef CONFIG
+#define CONFIG
 
 #include <Arduino.h>
 
 struct Config {
   
-    // Network configuration
+    // WIFI configuration
     char wifi_ssid[32];
     char wifi_password[64];
 
+    // MQTT configuration
     char mqtt_server[40];
     char mqtt_user[40];
     char mqtt_pass[40];

@@ -1,5 +1,5 @@
-#ifndef ACTIONS_H
-#define ACTIONS_H
+#ifndef ACTIONS
+#define ACTIONS
 
 #include <Arduino.h>
 

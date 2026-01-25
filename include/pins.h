@@ -1,5 +1,5 @@
-#ifndef PINS_H
-#define PINS_H
+#ifndef PINS
+#define PINS
 
 // --- LEDS ---
 #define LED_GREEN       0
@@ -15,8 +15,5 @@
 // --- RELAYS ---
 #define RELAY_DOWN      13  // L1
 #define RELAY_UP        15  // L3
-
-// --- OTROS ---
-#define PIN_UNUSED      4
 
 #endif

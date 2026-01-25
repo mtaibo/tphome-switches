@@ -1,15 +1,17 @@
 #include <config.h>
+#include <secrets.h>
 
 Config config;
 
 void config_default() {
 
     // Network configuration
-    strcpy(config.wifi_ssid, "");
-    strcpy(config.wifi_password, "");
+    strcpy(config.wifi_ssid, WIFI_SSID);
+    strcpy(config.wifi_password, WIFI_PASS);
 
-    strcpy(config.mqtt_user, "");
-    strcpy(config.mqtt_pass, "");
+    strcpy(config.mqtt_server, MQTT_SERVER);
+    strcpy(config.mqtt_user, MQTT_USER);
+    strcpy(config.mqtt_pass, MQTT_PASS);
 
     // Blind configuration
     config.up_time = 30000;
