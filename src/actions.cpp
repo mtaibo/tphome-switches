@@ -15,8 +15,6 @@ void startBlink(int led) {
     nextBlinkTime = millis();
 }
 
-
-
 void blindUp() {
     if (config.is_moving) blindStop();
 
@@ -29,6 +27,16 @@ void blindUp() {
     config.active_led = LED_TOP;
 }
 
+void blindStop() {
+    digitalWrite(config.active_relay, LOW);
+    digitalWrite(config.active_led, LOW);
+
+    if (!config.is_moving) digitalWrite(LED_MID, HIGH);
+    mid_stop_time = millis() + 1000;
+    pause_control = true;
+    config.is_moving = false;
+}
+
 void blindDown() {
     if (config.is_moving) blindStop();
 
@@ -39,16 +47,6 @@ void blindDown() {
     config.pending_relay = RELAY_DOWN;
     
     config.active_led = LED_BOTTOM;
-}
-
-void blindStop() {
-    digitalWrite(config.active_relay, LOW);
-    digitalWrite(config.active_led, LOW);
-    config.is_moving = false;
-
-    digitalWrite(LED_MID, HIGH);
-    mid_stop_time = millis() + 1000;
-    pause_control = true;
 }
 
 void updateActions() {
@@ -94,16 +92,19 @@ void handleButtonAction(int pin, unsigned long duration) {
 
     if (pin == BTN_TOP) {
         if (duration < config.short_pulse) blindUp();
-        else if (duration > config.short_pulse) startBlink(LED_TOP);
+        else if (duration > config.short_pulse && duration < config.long_pulse) startBlink(LED_TOP);
+        else if (duration > config.long_pulse) ;
     } 
     
     else if (pin == BTN_MID) {
         if (duration < config.short_pulse) blindStop();
-        else if (duration > config.short_pulse) startBlink(LED_GREEN); 
+        else if (duration > config.short_pulse && duration < config.long_pulse) startBlink(LED_TOP);
+        else if (duration > config.long_pulse) ;
     } 
     
     else if (pin == BTN_BOTTOM) {
         if (duration < config.short_pulse) blindDown();
-        else if (duration > config.short_pulse) startBlink(LED_BOTTOM);
+        else if (duration > config.short_pulse && duration < config.long_pulse) startBlink(LED_TOP);
+        else if (duration > config.long_pulse) ;
     }
 }
