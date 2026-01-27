@@ -2,10 +2,10 @@
 #include <config.h>
 #include <pins.h>
 
+// An enum to simplify direction reading and to prevent errors
 enum Direction { UP = 1, DOWN = 0, STOP = -1 };
 
 int pause_control = false;
-unsigned long mid_stop_time;
 
 int blinkCount = 0;
 int blinkingLed = LED_GREEN;
@@ -32,8 +32,14 @@ void moveBlind(Direction direction) {
         digitalWrite(LED_TOP, LOW);
         digitalWrite(LED_BOTTOM, LOW);
 
+        // Change active relay and active leds to -1
+        config.active_led = -1;
+        config.active_relay = -1;
+
+        // Adjust time and config to stop the blind
+        // ! Take a look at this three lines below
         config.is_moving = false;
-        mid_stop_time = millis() + 1000;
+        config.stop_time = millis() + config.stop_led_time;
         pause_control = true;
 
         // If the order was just to STOP, finish the action
@@ -76,7 +82,7 @@ void updateActions() {
     }
 
     // Code to control pause button
-    if (pause_control == true && millis() >= mid_stop_time) {
+    if (pause_control == true && millis() >= config.stop_time) {
         digitalWrite(LED_MID, LOW);
         pause_control = false;
     }

@@ -31,6 +31,7 @@ void config_default() {
 
     // Preferences
     config.block_buttons = false;
+    config.stop_led_time = 750;
     config.short_pulse = 3000;
     config.long_pulse = 10000;
 }

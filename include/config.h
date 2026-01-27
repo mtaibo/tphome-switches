@@ -33,6 +33,7 @@ struct Config {
   
     // Preferences
     bool block_buttons;    
+    unsigned long stop_led_time;
     unsigned long short_pulse;
     unsigned long long_pulse;
 };
