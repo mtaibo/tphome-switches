@@ -2,9 +2,6 @@
 #include <config.h>
 #include <pins.h>
 
-// An enum to simplify direction reading and to prevent errors
-enum Direction { UP = 1, DOWN = 0, STOP = -1 };
-
 int pause_control = false;
 
 int blinkCount = 0;
@@ -78,7 +75,7 @@ void updateActions() {
     }
 
     if (config.is_moving && millis() >= config.stop_time) {
-        blindStop();
+        moveBlind(STOP);
     }
 
     // Code to control pause button
