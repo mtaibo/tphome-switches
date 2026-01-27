@@ -20,8 +20,8 @@ void moveBlind(Direction direction) {
     if (config.is_moving || direction == STOP) {
 
         // Check if blind is already moving on same direction
-        if (config.active_relay == RELAY_UP && direction == 1) return;
-        if (config.active_relay == RELAY_DOWN && direction == 0) return;
+        if (config.active_relay == RELAY_UP && direction == UP) return;
+        if (config.active_relay == RELAY_DOWN && direction == DOWN) return;
         
         // Stop every led and relay
         digitalWrite(RELAY_UP, LOW);
@@ -44,8 +44,8 @@ void moveBlind(Direction direction) {
     }
 
     // Check if blind is already at its lowest or highest position
-    if (config.current_position == 0.0 && direction == 0) return;
-    else if (config.current_position == 100.0 && direction == 1) return;
+    if (config.current_position <= 0.0 && direction == DOWN) return;
+    if (config.current_position >= 100.0 && direction == UP) return;
     
     config.active_led = (direction == UP) ? LED_TOP : LED_BOTTOM;
     config.pending_relay = (direction == UP) ? RELAY_UP : RELAY_DOWN;
