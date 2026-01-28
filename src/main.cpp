@@ -23,18 +23,23 @@ void setup() {
 
     // 
     setup_wifi();
-    client.setServer(config.mqtt_server, 1883);
-    client.setCallback(callback);
+    setup_mqtt();
 }
 
 void loop() {
 
+    // Update wifi connection and check if
+    // there was a client interaction
     if (!client.connected()) reconnect();
     client.loop(); 
 
+    // Check buttons to see if there was a 
+    // physical action on the switch
     buttonTop.check();
     buttonMid.check();
     buttonBottom.check();
 
+    // Update every action that the chip is
+    // doing with relays and leds
     updateActions();
 }

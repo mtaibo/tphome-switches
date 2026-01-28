@@ -23,6 +23,7 @@ void moveBlind(Direction direction) {
 
         // Adjust time and config to stop the blind
         config.stop_led_time = millis() + config.mid_led_time;
+        config.stop_time = millis() + config.motor_safe_time;
         config.pause_control = true;
         config.is_moving = false;
         config.is_waiting = false;
@@ -39,8 +40,6 @@ void moveBlind(Direction direction) {
     config.pending_led = (direction == UP) ? LED_TOP : LED_BOTTOM;
     config.pending_relay = (direction == UP) ? RELAY_UP : RELAY_DOWN;
 
-    // Set the variables needed to control the update time
-    config.stop_time = millis() + config.motor_safe_time; 
     config.is_waiting = true;
 }
 

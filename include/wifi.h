@@ -4,10 +4,14 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
+// Different objects from the imports above
+// to control the Wifi of the chip and the MQTT server
 extern WiFiClient espClient;
 extern PubSubClient client;
 
 void setup_wifi();
+void setup_mqtt();
+
 void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
 

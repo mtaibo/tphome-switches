@@ -11,7 +11,10 @@ PubSubClient client(espClient);
 unsigned long lastReconnectAttempt = 0;
 
 void callback(char* topic, byte* payload, unsigned int length) {
+
     String message = "";
+
+    // 
     for (unsigned int i = 0; i < length; i++) message += (char)payload[i];
 
     if (String(topic) == "casa/persiana/comando") {
