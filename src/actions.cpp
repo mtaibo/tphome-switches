@@ -31,26 +31,29 @@ void moveBlind(Direction direction) {
 
         // If the order was just to STOP, finish the action
         if (direction == STOP) {digitalWrite(LED_MID, HIGH); return;}
-    }
-
-    // Check if blind is already at its lowest or highest position
-    if (config.current_position <= 0.0 && direction == DOWN) return;
-    if (config.current_position >= 100.0 && direction == UP) return;
+    } 
     
-    // Set the next led and relay to be turned on
-    config.pending_led = (direction == UP) ? LED_TOP : LED_BOTTOM;
-    config.pending_relay = (direction == UP) ? RELAY_UP : RELAY_DOWN;
+    else if (!config.is_waiting) {
+        
+        // Check if blind is already at its lowest or highest position
+        if (config.current_position <= 0.0 && direction == DOWN) return;
+        if (config.current_position >= 100.0 && direction == UP) return;
+        
+        // Set the next led and relay to be turned on
+        config.pending_led = (direction == UP) ? LED_TOP : LED_BOTTOM;
+        config.pending_relay = (direction == UP) ? RELAY_UP : RELAY_DOWN;
 
-    config.stop_time = millis();
-    config.is_waiting = true;
+        config.stop_time = millis();
+        config.is_waiting = true;
+    }
 }
 
 void updateActions() {
 
-    unsigned long now = millis();
+    unsigned long time_running = millis() - config.stop_time;
 
     // Control waiting and pending status for relays
-    if (config.is_waiting && (now - config.stop_time >= config.motor_safe_time)) {
+    if (config.is_waiting && (time_running >= config.motor_safe_time)) {
 
         config.active_led = config.pending_led;
         config.active_relay = config.pending_relay;
@@ -58,7 +61,7 @@ void updateActions() {
         digitalWrite(config.active_led, HIGH);
         digitalWrite(config.active_relay, HIGH);
         
-        config.stop_time = now; 
+        config.stop_time = millis(); 
         config.current_limit = (config.active_relay == RELAY_UP) ? config.up_time : config.down_time;
         
         config.is_moving = true;
@@ -66,10 +69,10 @@ void updateActions() {
     }
 
     // Control common moving with stop_time
-    else if (config.is_moving && (now - config.stop_time >= config.current_limit)) moveBlind(STOP);
+    else if (config.is_moving && (time_running >= config.current_limit)) moveBlind(STOP);
 
     // Code to control pause button
-    else if (config.pause_control && (now - config.stop_led_time >= config.mid_led_time)) {
+    else if (config.pause_control && (time_running >= config.mid_led_time)) {
         digitalWrite(LED_MID, LOW);
         config.pause_control = false;
     }
