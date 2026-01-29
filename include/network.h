@@ -9,8 +9,7 @@
 extern WiFiClient espClient;
 extern PubSubClient client;
 
-void setup_wifi();
-void setup_mqtt();
+void network_setup();
 
 void reconnect();
 void callback(char* topic, byte* payload, unsigned int length);

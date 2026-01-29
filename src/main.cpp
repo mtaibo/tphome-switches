@@ -1,7 +1,7 @@
 #include <actions.h>
+#include <network.h>
 #include <buttons.h>
 #include <config.h>
-#include <wifi.h>
 #include <pins.h>
 
 int output_pins[] = {LED_TOP, LED_MID, LED_BOTTOM, LED_GREEN, RELAY_UP, RELAY_DOWN};
@@ -19,11 +19,10 @@ void setup() {
     // TODO: Turn this output pin configuration into an external pin.begin()
     for (int i=0; i<6; i++) {
         pinMode(output_pins[i], OUTPUT);
+        digitalWrite(output_pins[i], LOW);
     }
 
-    // 
-    setup_wifi();
-    setup_mqtt();
+    network_setup();
 }
 
 void loop() {
