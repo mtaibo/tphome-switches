@@ -11,16 +11,17 @@ PubSubClient client(espClient);
 void callback(char* topic, byte* payload, unsigned int length) {
 
     String message = "";
+    String strTopic = String(topic);
 
     // Loop that gets the callback message from its bytes and length
     for (unsigned int i = 0; i < length; i++) message += (char)payload[i];
 
-    // 
-    if (String(topic) == "tphome/blinds/") {
+    // Topic managment
+    if (strTopic == "tphome/blinds/cmd") {
         if (message == "UP")    handleButtonAction(BTN_TOP, 200); 
         else if (message == "STOP") handleButtonAction(BTN_MID, 200);
         else if (message == "DOWN") handleButtonAction(BTN_BOTTOM, 200);
-    }
+    } 
 }
 
 void network_setup() {
