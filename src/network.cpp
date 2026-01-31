@@ -39,17 +39,14 @@ void network_setup() {
 // and also to subscribe to the corresponding topic
 bool mqtt_reconnect() {
     if (client.connect("Persiana_ESP8266", config.mqtt_user, config.mqtt_pass)) {
-        client.subscribe("casa/persiana/comando"); return true;}
+        client.subscribe("tphome/blinds/cmd"); blink(LED_GREEN, 0); return true;}
     return false;
 }
 
 void network_check() {
 
     // This line activates the green_led while the wifi is not connected
-    if (WiFi.status() != WL_CONNECTED) { if (millis() - config.last_blink >= 500) blink(LED_GREEN, 1); return; } 
-    
-    // This line deactivates the blinking when the wifi is connected
-    if (config.is_blinking) blink(LED_GREEN, 0);
+    if (WiFi.status() != WL_CONNECTED) {if (!config.is_blinking) { blink(LED_GREEN, 1); } return; } 
 
     // Gestión de MQTT
     if (!client.connected()) {
