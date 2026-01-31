@@ -2,6 +2,33 @@
 #include <config.h>
 #include <pins.h>
 
+void blink(int pin, int control) {
+
+    // Stop control
+    if (control == 0) {
+        config.is_blinking = false;
+        config.blinking_led = -1;
+        digitalWrite(pin, LOW);
+        return; 
+    }
+
+    // Control blinking, for the first time and the following times
+    if (control == 1) {
+
+        // If its the first blink, setup the config variables, 
+        // otherwise, change blinking_state
+        if (!config.is_blinking) {
+            config.is_blinking = true;
+            config.blinking_led = pin;
+            config.blinking_state = HIGH;
+        } else config.blinking_state = !config.blinking_state;
+
+        // Then write on pin the state, high or low, and set the last_blink time
+        digitalWrite(pin, config.blinking_state);
+        config.last_blink = millis();
+    }
+}
+
 void moveBlind(Direction direction) {
 
     // Check if moving its needed
@@ -76,6 +103,9 @@ void updateActions() {
         digitalWrite(LED_MID, LOW);
         config.pause_control = false;
     }
+
+    // Code to control blinking
+    if (config.is_blinking && millis() - config.last_blink >= 500) blink(config.blinking_led, 1);
 }
 
 void handleButtonAction(int pin, unsigned long duration) {

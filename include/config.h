@@ -35,6 +35,12 @@ struct Config {
     int active_led;          
     int pending_relay;
     int pending_led;
+
+    // Blinking control
+    bool is_blinking;
+    int blinking_led;
+    int blinking_state;
+    unsigned long last_blink;
   
     // Preferences
     unsigned long mid_led_time;
@@ -46,7 +52,7 @@ struct Config {
 
 extern Config config; 
 
-void config_init();
+void config_setup();
 void config_default();
 
 #endif
