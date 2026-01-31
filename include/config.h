@@ -52,7 +52,7 @@ struct Config {
 
 extern Config config; 
 
-void config_init();
+void config_setup();
 void config_default();
 
 #endif

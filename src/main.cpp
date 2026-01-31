@@ -8,7 +8,7 @@ int output_pins[] = {LED_TOP, LED_MID, LED_BOTTOM, LED_GREEN, RELAY_UP, RELAY_DO
 
 void setup() {
 
-    config_init();
+    config_setup();
 
     // Buttons setup
     buttonTop.setup();
@@ -27,10 +27,9 @@ void setup() {
 
 void loop() {
 
-    // Update wifi connection and check if
-    // there was a client interaction
-    if (!client.connected()) reconnect();
-    client.loop(); 
+    // Check if connection is still available
+    // and if there are new messages to process
+    network_check();
 
     // Check buttons to see if there was a 
     // physical action on the switch

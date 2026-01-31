@@ -1,9 +1,9 @@
 #include <config.h>
-#include <secrets.h>
+#include <credentials.h>
 
 Config config;
 
-void config_init() {
+void config_setup() {
 
     config_default();
 
@@ -31,8 +31,8 @@ void config_default() {
 
     // Blinking config
     config.blinking_led = -1;
-    config.is_blinking = false
-    config.last_blink = 0
+    config.is_blinking = false;
+    config.last_blink = 0;
 
     // Preferences
     config.mid_led_time = 1000;
