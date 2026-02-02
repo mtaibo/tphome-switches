@@ -10,6 +10,11 @@ void setup() {
 
     config_setup();
 
+    // This both lines below activate the pin to allow
+    // the blue leds to turn on, otherwise, they'll be blocked
+    pinMode(CONFIG_LED, OUTPUT);
+    digitalWrite(CONFIG_LED, HIGH);
+
     // Buttons setup
     buttonTop.setup();
     buttonMid.setup();

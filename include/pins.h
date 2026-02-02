@@ -2,6 +2,8 @@
 #define PINS
 
 // --- LEDS ---
+#define CONFIG_LED      1
+
 #define LED_GREEN       0
 #define LED_BOTTOM      2
 #define LED_MID         14
