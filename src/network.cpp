@@ -1,8 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-#include <config.h>
 #include <actions.h>
+#include <config.h>
 #include <pins.h>
 
 WiFiClient espClient;
@@ -10,6 +10,7 @@ PubSubClient client(espClient);
 
 void callback(char* topic, byte* payload, unsigned int length) {
 
+    // Get both message and topic on string type variables
     String message = "";
     String strTopic = String(topic);
 
@@ -33,12 +34,15 @@ void network_setup() {
     // MQTT server configuration
     client.setServer(config.mqtt_server, 1883);
     client.setCallback(callback);
+
+    // Topic setup
+    
 }
 
 // Function to connect to the MQTT server with its credentials
 // and also to subscribe to the corresponding topic
 bool mqtt_reconnect() {
-    if (client.connect("Persiana_ESP8266", config.mqtt_user, config.mqtt_pass)) {
+    if (client.connect(config.device_id, config.mqtt_user, config.mqtt_pass)) {
         client.subscribe("tphome/blinds/cmd"); blink(LED_GREEN, 0); return true;}
     return false;
 }

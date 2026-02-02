@@ -5,19 +5,28 @@
 
 struct Config {
   
+    // Device ID
+    char device_id[10];
+  
     // WIFI configuration
     char wifi_ssid[32];
     char wifi_password[64];
 
     // MQTT configuration
-    char mqtt_server[40]; // Raspberry IP
+    char mqtt_server[40];
     char mqtt_user[40];
     char mqtt_pass[40];
   
+    // Topic configuration
+    char type[20];
+    char room[20];
+
+    char name[30];
+  
     // Blind configuration
-    unsigned long up_time;    // ms
-    unsigned long down_time;  // ms
-    float current_position;   // 0.0 a 100.0
+    unsigned long up_time;
+    unsigned long down_time;
+    float current_position; 
 
     // Execution data
     bool is_moving;

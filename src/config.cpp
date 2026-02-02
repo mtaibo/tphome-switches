@@ -4,13 +4,14 @@
 Config config;
 
 void config_setup() {
-
     config_default();
-
 }
 
 
 void config_default() {
+
+    // Device ID
+    strcpy(config.device_id, "B364859");
 
     // Network configuration
     strcpy(config.wifi_ssid, WIFI_SSID);
@@ -19,6 +20,11 @@ void config_default() {
     strcpy(config.mqtt_server, MQTT_SERVER);
     strcpy(config.mqtt_user, MQTT_USER);
     strcpy(config.mqtt_pass, MQTT_PASS);
+
+    // Topic setup
+    strcpy(config.type, "blinds");
+    strcpy(config.room, "lounge");
+    strcpy(config.name, "big-blind");
 
     // Blind configuration
     config.up_time = 30000;
