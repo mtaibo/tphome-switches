@@ -1,9 +1,24 @@
-#include <config.h>
 #include <credentials.h>
+#include <config.h>
+#include <pins.h>
 
 Config config;
 
 void config_setup() {
+
+    // This both lines below activate the pin to allow
+    // the blue leds to turn on, otherwise, they'll be blocked
+    pinMode(CONFIG_LED, OUTPUT);
+    digitalWrite(CONFIG_LED, HIGH);
+
+    // Loop to turn every output pin to output mode
+    // TODO: Turn this output pin configuration into an external pin.begin()
+    int output_pins[] = {LED_TOP, LED_MID, LED_BOTTOM, LED_GREEN, RELAY_UP, RELAY_DOWN};
+    for (int i=0; i<6; i++) {
+        pinMode(output_pins[i], OUTPUT);
+        digitalWrite(output_pins[i], LOW);
+    }
+
     config_default();
 }
 
