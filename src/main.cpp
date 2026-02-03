@@ -1,33 +1,24 @@
-#include <actions.h> // update_actions();
-#include <network.h> // network_setup(); network_check();
-#include <buttons.h> // buttonTop/Mid/Bottom.setup()/.check();
-#include <config.h> // config_setup();
+#include <actions.h>
+#include <network.h>
+#include <buttons.h>
+#include <config.h>
 
 void setup() {
 
     config_setup();
+    network_setup();
 
-    // Buttons setup
     buttonTop.setup();
     buttonMid.setup();
     buttonBottom.setup();
-
-    network_setup();
 }
 
 void loop() {
 
-    // Check if connection is still available
-    // and if there are new messages to process
+    update_actions();
     network_check();
-
-    // Check buttons to see if there was a 
-    // physical action on the switch
+ 
     buttonTop.check();
     buttonMid.check();
     buttonBottom.check();
-
-    // Update every action that the chip is
-    // doing with relays and leds
-    update_actions();
 }
