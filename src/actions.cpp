@@ -90,12 +90,30 @@ void update_actions() {
     // Control waiting and pending status for relays
     if (config.is_waiting && (time_running >= config.motor_safe_time)) {
 
+        // First of all, before setting any relay to HIGH, turn the other 
+        // relay to LOW to prevent the motor of the collapse
+        if (config.pending_relay == RELAY_UP) {
+            digitalWrite(LED_BOTTOM, LOW);
+            digitalWrite(RELAY_DOWN, LOW);
+        } else if (config.pending_relay == RELAY_DOWN) {
+            digitalWrite(LED_TOP, LOW);
+            digitalWrite(RELAY_UP, LOW);
+        }
+
+        // Turn the pending led and relay to HIGH
+        digitalWrite(config.pending_led, HIGH);
+        digitalWrite(config.pending_relay, HIGH);
+        
+        // Configure the active led and relay to the active ones 
         config.active_led = config.pending_led;
         config.active_relay = config.pending_relay;
 
         digitalWrite(config.active_led, HIGH);
         digitalWrite(config.active_relay, HIGH);
         
+        // Configuration of the variables for the update actions function
+        config.is_moving = true;
+        config.is_waiting = false;
         config.stop_time = millis(); 
         config.current_limit = (config.active_relay == RELAY_UP) ? config.up_time : config.down_time;
         
