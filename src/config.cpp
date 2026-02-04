@@ -12,12 +12,24 @@ void config_setup() {
     digitalWrite(CONFIG_LED, HIGH);
 
     // Loop to turn every output pin to output mode
-    // TODO: Turn this output pin configuration into an external pin.begin()
     int output_pins[] = {LED_TOP, LED_MID, LED_BOTTOM, LED_GREEN, RELAY_UP, RELAY_DOWN};
     for (int i=0; i<6; i++) {
         pinMode(output_pins[i], OUTPUT);
         digitalWrite(output_pins[i], LOW);
     }
+
+    // Device ID
+    strcpy(config.device_id, DEVICE_ID);
+
+    // Network configuration
+    strcpy(config.wifi_ssid, WIFI_SSID);
+    strcpy(config.wifi_password, WIFI_PASS);
+
+    strcpy(config.mqtt_server, MQTT_SERVER);
+    config.mqtt_server_port = MQTT_SERVER_PORT;
+
+    strcpy(config.mqtt_user, MQTT_USER);
+    strcpy(config.mqtt_pass, MQTT_PASS);
 
     config_default();
 }
@@ -25,16 +37,7 @@ void config_setup() {
 
 void config_default() {
 
-    // Device ID
-    strcpy(config.device_id, "B364859");
-
-    // Network configuration
-    strcpy(config.wifi_ssid, WIFI_SSID);
-    strcpy(config.wifi_password, WIFI_PASS);
-
-    strcpy(config.mqtt_server, MQTT_SERVER);
-    strcpy(config.mqtt_user, MQTT_USER);
-    strcpy(config.mqtt_pass, MQTT_PASS);
+    // ! VARIABLES THAT CAN BE MODIFIED
 
     // Topic setup
     strcpy(config.type, "blinds");
@@ -42,9 +45,11 @@ void config_default() {
     strcpy(config.name, "big-blind");
 
     // Blind configuration
-    config.up_time = 30000;
-    config.down_time = 25000;
+    config.up_time = 40000;
+    config.down_time = 40000;
     config.current_position = 50.0;
+
+    // ! VARIABLES THAT ARE JUST DEFAULT SETTINGS
 
     // Execution data
     config.is_moving = false;

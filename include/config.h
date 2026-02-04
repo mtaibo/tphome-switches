@@ -6,25 +6,28 @@
 struct Config {
   
     // Device ID
-    char device_id[10];
+    char device_id[16];
   
     // WIFI configuration
     char wifi_ssid[32];
     char wifi_password[64];
 
     // MQTT configuration
-    char mqtt_server[30];
-    char mqtt_user[30];
-    char mqtt_pass[30];
+    char mqtt_server[32];
+    int mqtt_server_port;
+
+    char mqtt_user[32];
+    char mqtt_pass[32];
   
     // Topic configuration
-    char type[20];
-    char room[20];
-    char name[30];
+    char type[32];
+    char room[32];
+    char name[32];
 
-    char set_topic[96];
-    char state_topic[96];
-    char admin_topic[96];
+    char set_topic[128];
+    char state_topic[128];
+    char admin_set_topic[64];
+    char admin_state_topic[64];
   
     // Blind configuration
     unsigned long up_time;
