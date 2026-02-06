@@ -36,13 +36,26 @@ void callback(char* topic, byte* payload, unsigned int length) {
             client.publish(config.admin_state_topic, config.device_id);
         }
 
+        // 
         else if (length == 10 && !memcmp(payload, "GET_CONFIG", 10)) {
             client.publish(config.admin_state_topic, "DICT");
+        } else if (length >= 50 && !memcmp(payload, "SET_CONFIG", 10)) {
+
+        } else if (length == 11 && !memcmp(payload, "SAVE_CONFIG", 11)) {
+
+        } else if (length == 14 && !memcmp(payload, "DEFAULT_CONFIG", 14)) {
+            config_default(); save_config();
+            client.publish(config.admin_state_topic, "default config restored");
+        }
+
+        // Restart the chip to reload its setup and loop
+        else if (length == 6 && !memcmp(payload, "REBOOT", 6)) {
+
         }
 
         // Position reset messages to prevent the blind to get stuck at any wrong pos
         else if (length == 13 && !memcmp(payload, "RESET_POS_100", 13)) config.current_position = 100;
-        else if (length == 13 && !memcmp(payload, "RESET_POS_50", 12)) config.current_position = 50;
+        else if (length == 12 && !memcmp(payload, "RESET_POS_50", 12)) config.current_position = 50;
         else if (length == 11 && !memcmp(payload, "RESET_POS_0", 11)) config.current_position = 0;
     }
 }

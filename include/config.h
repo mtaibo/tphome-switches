@@ -3,9 +3,6 @@
 
 #include <Arduino.h>
 
-#define DEFAULT_UP_TIME 40000
-#define DEFAULT_DOWN_TIME 40000
-
 struct Config {
   
     // Device ID
