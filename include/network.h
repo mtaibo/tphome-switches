@@ -1,5 +1,5 @@
-#ifndef WIFI
-#define WIFI
+#ifndef NETWORK_H
+#define NETWORK_H
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>

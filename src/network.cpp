@@ -20,7 +20,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
             else if (!memcmp(payload, "DOWN", 4)) handle_button_action(BTN_BOTTOM, 200);
         }
 
-        // Order to set the position of the blind to a determined pos
+        // Order to set the position of the blind to a determined position
         if (length >= 4 && !memcmp(payload, "SET", 3)) {
             // TODO: When blind position gets implemented, this will be next
         }

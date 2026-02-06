@@ -1,9 +1,9 @@
 #include <Arduino.h>
 
-#include <buttons.h>
-#include <actions.h>
-#include <config.h>
-#include <pins.h>
+#include "buttons.h"
+#include "actions.h"
+#include "config.h"
+#include "pins.h"
 
 Button::Button(int pin) : _pin(pin), _startTime(0), _wasPressed(false), _waitingRelease(false){}
 

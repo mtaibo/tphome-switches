@@ -1,9 +1,9 @@
 #include <LittleFS.h>
 #include <ArduinoJson.h>
 
-#include <credentials.h>
-#include <config.h>
-#include <pins.h>
+#include "credentials.h"
+#include "config.h"
+#include "pins.h"
 
 Config config;
 

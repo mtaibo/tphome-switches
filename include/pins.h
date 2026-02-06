@@ -1,5 +1,5 @@
-#ifndef PINS
-#define PINS
+#ifndef PINS_H
+#define PINS_H
 
 // --- LEDS ---
 #define CONFIG_LED      1
