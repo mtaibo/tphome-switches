@@ -130,12 +130,14 @@ void update_actions() {
         // Configure the variables for the update actions function
         config.is_moving = true;
         config.is_waiting = false;
+
         config.stop_time = millis(); 
-        config.current_limit = (config.active_relay == RELAY_UP) ? config.up_time : config.down_time;
+        config.current_time_limit = (config.active_relay == RELAY_UP) ? config.up_time : config.down_time;
     }
 
-    // Control the is_moving state, when the blind is moving, this segment
-    // of code will 
+    // Control the is_moving state, when the blind is moving, 
+    // this segment of code will ... 
+    // TODO: pending comment
     if (config.is_moving) {
         unsigned long delta = millis() - last_cycle_time; 
         float step = (delta * 100.0) / (config.active_relay == RELAY_UP ? config.up_time : config.down_time);
@@ -154,7 +156,7 @@ void update_actions() {
 
         // If the time that the relay has been running is greater than the up_time 
         // or the down_time, therefore, the current_limit, the blind stops
-        else if (time_running >= config.current_limit) move_blind(STOP); 
+        else if (time_running >= config.current_time_limit) move_blind(STOP); 
     }
 
     // Code to control pause button

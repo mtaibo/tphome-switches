@@ -51,7 +51,7 @@ struct Config {
     bool pause_control;
     unsigned long stop_time; 
     unsigned long stop_led_time;
-    unsigned long current_limit;
+    unsigned long current_time_limit;
 
     // Blinking control
     bool is_blinking;
