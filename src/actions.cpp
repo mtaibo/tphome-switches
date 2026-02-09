@@ -103,6 +103,10 @@ void move_blind(Direction direction) {
 
 void update_actions() {
 
+    // Variables to calculate time limit exceed
+    static bool limit_reached = false;
+    static unsigned long limit_reached_start_time = 0;
+
     unsigned long time_running = millis() - config.stop_time;
 
     // Control the is_waiting state, when any relay or led is waiting
@@ -137,6 +141,9 @@ void update_actions() {
         config.is_moving = true;
         config.is_waiting = false;
 
+        limit_reached = false; 
+        limit_reached_start_time = 0;
+
         config.stop_time = millis(); 
         config.current_time_limit = (config.active_relay == RELAY_UP) ? config.up_time : config.down_time;
         config.last_cycle_time = millis();
@@ -157,21 +164,34 @@ void update_actions() {
         float step = (delta * 100.0) / config.current_time_limit;
         config.current_position += (config.active_relay == RELAY_UP) ? step : -step;
 
-        // Prevente the current_position to get above 100 or below 0
+        // Prevent the current_position to get above 100 or below 0
         if (config.current_position > 100.0) config.current_position = 100.0;
         if (config.current_position < 0.0) config.current_position = 0.0;
 
         // If we are moving, and we get to the final position that this movement was trying to reach
         // just stop the movement with the move_blind(STOP) function
-        if ((config.active_relay == RELAY_UP && config.current_position >= config.next_position) ||
-            (config.active_relay == RELAY_DOWN && config.current_position <= config.next_position)) {
-            
-            if (config.next_position < 100.0 && config.next_position > 0.0) move_blind(STOP);
+        if (config.next_position < 100.0 && config.next_position > 0.0) {
+            if ((config.active_relay == RELAY_UP && config.current_position >= config.next_position) ||
+                (config.active_relay == RELAY_DOWN && config.current_position <= config.next_position)) {
+                    limit_reached=false; move_blind(STOP);}
+        }
+
+        // When next_position is 100.0 or 0.0, calculate an exceed of 2 seconds 
+        // from the current_time_limit to prevent the blind from getting at an
+        // intermediate position when trying to reach limit
+        else {
+            if (!limit_reached) if (config.current_position == 100.0 || config.current_position == 0.0) limit_reached=true;
+            else if (limit_reached_start_time == 0) limit_reached_start_time = millis();
+            else if (millis() - limit_reached_start_time >= 3000) {
+                limit_reached = false;
+                limit_reached_start_time=0;
+                move_blind(STOP);
+            }
         }
 
         // If the time that the relay has been running is greater than the up_time 
         // or the down_time, therefore, the current_limit, the blind stops
-        if (time_running >= config.current_time_limit) move_blind(STOP); 
+        if (time_running >= config.current_time_limit+5000) {limit_reached = false; move_blind(STOP);}
     }
 
     // Code to control pause button
@@ -201,8 +221,8 @@ void handle_button_action(int pin, unsigned long duration) {
     
     else if (pin == BTN_BOTTOM) {
         if (duration < config.short_pulse) {
-            if (abs(config.current_position - config.down_position) < 0.8) set_position(0);
-            else set_position(config.down_position); 
+            if (config.current_position > config.down_position) set_position(config.down_position);
+            else if (config.current_position <= config.down_position) set_position(0);
         }
         else if (duration > config.short_pulse && duration < config.long_pulse) ;
         else if (duration > config.long_pulse) network_setup();
