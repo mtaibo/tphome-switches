@@ -33,14 +33,15 @@ struct Config {
     unsigned long up_time;
     unsigned long down_time;
     
-    unsigned int down_position;
-    unsigned int current_position; 
+    float down_position;
+    float current_position; 
 
     // Execution data
     bool is_moving;
     bool is_waiting;
+    bool is_in_ap;
 
-    unsigned int next_position;
+    float next_position;
 
     int active_relay;  
     int active_led;          
@@ -52,6 +53,7 @@ struct Config {
     unsigned long stop_time; 
     unsigned long stop_led_time;
     unsigned long current_time_limit;
+    unsigned long last_cycle_time;
 
     // Blinking control
     bool is_blinking;

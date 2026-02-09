@@ -21,8 +21,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
         }
 
         // Order to set the position of the blind to a determined position
-        if (length >= 4 && !memcmp(payload, "SET", 3)) {
-            // TODO: When blind position gets implemented, this will be next
+        if (length >= 4 && !memcmp(payload, "SET:", 4)) {
+            String msg = "";
+            for (int i = 0; i < length; i++) msg += (char)payload[i];
+            set_position(msg.substring(4).toFloat());
         }
     } 
 
@@ -30,17 +32,66 @@ void callback(char* topic, byte* payload, unsigned int length) {
     // or to publish configuration elements from the chip
     else if (!strcmp(topic, config.admin_set_topic)) {
         
-        // TODO: Possible commands on admin topic are pending to be created
-
         // Command to get blind id but useful as a ping/pong command
         if (length == 6 && !memcmp(payload, "GET_ID", 6)) {
             client.publish(config.admin_state_topic, config.device_id);
         }
 
         // Settings configuration commands
-        else if (length == 10 && !memcmp(payload, "GET_CONFIG", 10)) {
+        else if (length >= 10 && !memcmp(payload, "GET_CONFIG", 10)) {
 
-        } else if (length >= 50 && !memcmp(payload, "SET_CONFIG", 10)) {
+            String msg = "";
+            String response = "UNKNOWN_KEY";
+            for (int i = 0; i < length; i++) msg += (char)payload[i];
+
+            if (msg.indexOf(':') != -1) {
+                String key = msg.substring(msg.indexOf(':') + 1); 
+                if (key == "device_id") response = config.device_id;
+                else if (key == "wifi_ssid") response = config.wifi_ssid;
+                else if (key == "wifi_pass") response = config.wifi_pass;
+                else if (key == "mqtt_server") response = config.mqtt_server;
+                else if (key == "mqtt_port") response = config.mqtt_port;
+                else if (key == "mqtt_user") response = config.mqtt_user;
+                else if (key == "mqtt_pass") response = config.mqtt_pass;
+                else if (key == "type") response = config.type;
+                else if (key == "room") response = config.room;
+                else if (key == "name") response = config.name;
+                else if (key == "up_time") response = String(config.up_time);
+                else if (key == "down_time") response = String(config.down_time);
+                else if (key == "current_position") response = String(config.current_position);
+                else if (key == "down_position") response = String(config.down_position);
+            } else response = "ERROR: Format is GET_CONFIG:key";
+
+            client.publish(config.admin_state_topic, response.c_str());
+
+        } else if (length >= 10 && !memcmp(payload, "SET_CONFIG", 10)) {
+            String msg = "";
+            for (int i = 0; i < length; i++) msg += (char)payload[i];
+
+            int firstColon = msg.indexOf(':');
+            int secondColon = msg.indexOf(':', firstColon + 1);
+
+            if (firstColon != -1 && secondColon != -1) {
+                String key = msg.substring(firstColon + 1, secondColon);
+                String value = msg.substring(secondColon + 1);
+
+                if (key == "device_id") strncpy(config.device_id, value.c_str(), sizeof(config.device_id));
+                else if (key == "wifi_ssid") strncpy(config.wifi_ssid, value.c_str(), sizeof(config.wifi_ssid));
+                else if (key == "wifi_pass") strncpy(config.wifi_pass, value.c_str(), sizeof(config.wifi_pass));
+                else if (key == "mqtt_server") strncpy(config.mqtt_server, value.c_str(), sizeof(config.mqtt_server)); 
+                else if (key == "mqtt_port") config.mqtt_port = value.toInt();
+                else if (key == "mqtt_user") strncpy(config.mqtt_user, value.c_str(), sizeof(config.mqtt_user));
+                else if (key == "mqtt_pass") strncpy(config.mqtt_pass, value.c_str(), sizeof(config.mqtt_pass)); 
+                else if (key == "type") strncpy(config.type, value.c_str(), sizeof(config.type)); 
+                else if (key == "room") strncpy(config.room, value.c_str(), sizeof(config.room));
+                else if (key == "name") strncpy(config.name, value.c_str(), sizeof(config.name)); 
+                else if (key == "up_time") config.up_time = value.toInt();
+                else if (key == "down_time") config.down_time = value.toInt();
+                else if (key == "current_position") config.current_position = value.toFloat();
+                else if (key == "down_position") config.down_position = value.toFloat();
+                
+                client.publish(config.admin_state_topic, ("CONF_SAVED: " + key).c_str());
+            }
 
         } else if (length == 11 && !memcmp(payload, "SAVE_CONFIG", 11)) save_config();
 
@@ -50,11 +101,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
         // Restart the chip to reload its default values, setup and loop
         else if (length == 12 && !memcmp(payload, "RESET_MEMORY", 12)) {
             reset_memory(); client.publish(config.admin_state_topic, "default config restored");}
-
-        // Position reset messages to prevent the blind to get stuck at any wrong pos
-        else if (length == 13 && !memcmp(payload, "RESET_POS_100", 13)) config.current_position = 100;
-        else if (length == 12 && !memcmp(payload, "RESET_POS_50", 12)) config.current_position = 50;
-        else if (length == 11 && !memcmp(payload, "RESET_POS_0", 11)) config.current_position = 0;
     }
 }
 
@@ -95,11 +141,16 @@ bool mqtt_reconnect() {
 
         // Message sent when connection was succesful
         client.publish(config.state_topic, "CONNECTED", true);
+        client.publish(config.admin_state_topic, "CONNECTED", true);
         
         // Stop led blinking and return true as the connection was succesful
         blink(LED_GREEN, 0); return true;
 
     } return false;
+}
+
+void access_point() {
+
 }
 
 void network_check() {

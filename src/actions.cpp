@@ -30,7 +30,9 @@ void blink(int pin, int control) {
     }
 }
 
-void set_position(int next_position) {
+void set_position(float next_position) {
+
+    if (abs(next_position - config.current_position) < 0.5) return;
 
     if (next_position == config.current_position) return;
     config.next_position =  next_position;
@@ -73,14 +75,18 @@ void move_blind(Direction direction) {
         if (direction == STOP) {
             config.stop_led_time = now;
             config.pause_control = true;
+
+            if (config.current_position >= 100.0) config.current_position = 100.0;
+            else if (config.current_position <= 0.0) config.current_position = 0.0;
+
             digitalWrite(LED_MID, HIGH); 
             return;
         }
     } 
         
     // Check if blind is already at its lowest or highest position
-    if (config.current_position <= 0 && direction == DOWN) return;
-    if (config.current_position >= 100 && direction == UP) return;
+    if (config.current_position <= 0.0 && direction == DOWN) return;
+    if (config.current_position >= 100.0 && direction == UP) return;
         
     // Set the next led and relay to pending, to be turned on the next cycle
     config.pending_led = (direction == UP) ? LED_TOP : LED_BOTTOM;
@@ -133,30 +139,39 @@ void update_actions() {
 
         config.stop_time = millis(); 
         config.current_time_limit = (config.active_relay == RELAY_UP) ? config.up_time : config.down_time;
+        config.last_cycle_time = millis();
     }
 
     // Control the is_moving state, when the blind is moving, 
-    // this segment of code will ... 
-    // TODO: pending comment
+    // this segment of code will simply stop it and recalculate the current position
+    // of the blind depending on where the movement is going
     if (config.is_moving) {
-        unsigned long delta = millis() - last_cycle_time; 
-        float step = (delta * 100.0) / (config.active_relay == RELAY_UP ? config.up_time : config.down_time);
-        
-        if (config.active_relay == RELAY_UP) config.current_position += step;
-        else config.current_position -= step;
 
-        // This is just a couple lines to prevent the position to go above 100 or below 0
-        if (config.current_position > 100) config.current_position = 100;
-        if (config.current_position < 0) config.current_position = 0;
+        // Calculate the time difference and update the 
+        // last_cycle_time for the next delta calculation
+        unsigned long delta = millis() - config.last_cycle_time; 
+        config.last_cycle_time = millis();
+
+        // Calculate the step depending on the current_time_limit and
+        // add that step or substract that step depending on that limit
+        float step = (delta * 100.0) / config.current_time_limit;
+        config.current_position += (config.active_relay == RELAY_UP) ? step : -step;
+
+        // Prevente the current_position to get above 100 or below 0
+        if (config.current_position > 100.0) config.current_position = 100.0;
+        if (config.current_position < 0.0) config.current_position = 0.0;
 
         // If we are moving, and we get to the final position that this movement was trying to reach
         // just stop the movement with the move_blind(STOP) function
         if ((config.active_relay == RELAY_UP && config.current_position >= config.next_position) ||
-            (config.active_relay == RELAY_DOWN && config.current_position <= config.next_position)) move_blind(STOP);
+            (config.active_relay == RELAY_DOWN && config.current_position <= config.next_position)) {
+            
+            if (config.next_position < 100.0 && config.next_position > 0.0) move_blind(STOP);
+        }
 
         // If the time that the relay has been running is greater than the up_time 
         // or the down_time, therefore, the current_limit, the blind stops
-        else if (time_running >= config.current_time_limit) move_blind(STOP); 
+        if (time_running >= config.current_time_limit) move_blind(STOP); 
     }
 
     // Code to control pause button
@@ -175,21 +190,21 @@ void handle_button_action(int pin, unsigned long duration) {
     if (pin == BTN_TOP) {
         if (duration < config.short_pulse) set_position(100);
         else if (duration > config.short_pulse && duration < config.long_pulse) ;
-        else if (duration > config.long_pulse) ;
+        else if (duration > config.long_pulse) access_point();
     } 
     
     else if (pin == BTN_MID) {
         if (duration < config.short_pulse) move_blind(STOP);
-        else if (duration > config.short_pulse && duration < config.long_pulse) ;
-        else if (duration > config.long_pulse) ;
+        else if (duration > config.short_pulse && duration < config.long_pulse) save_config();
+        else if (duration > config.long_pulse) reset_memory();
     } 
     
     else if (pin == BTN_BOTTOM) {
         if (duration < config.short_pulse) {
-            if (config.current_position == config.down_position) set_position(0);
+            if (abs(config.current_position - config.down_position) < 0.8) set_position(0);
             else set_position(config.down_position); 
         }
         else if (duration > config.short_pulse && duration < config.long_pulse) ;
-        else if (duration > config.long_pulse) ;
+        else if (duration > config.long_pulse) network_setup();
     }
 }
