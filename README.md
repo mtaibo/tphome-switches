@@ -65,14 +65,14 @@ ACTIONS:
   TOP_BUTTON:
     - short_pulse: blind_up
     - medium_pulse: 
-    - long_pulse: 
+    - long_pulse: access_point
 
   MEDIUM_BUTTON:
     - short_pulse: blind_stop
-    - medium_pulse: 
-    - long_pulse: 
+    - medium_pulse: save_config
+    - long_pulse: reset_memory
   
   BOTTOM_BUTTON:
     - short_pulse: blind_down
     - medium_pulse: 
-    - long_pulse: 
+    - long_pulse: network_setup()
