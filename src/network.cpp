@@ -26,8 +26,12 @@ void callback(char* topic, byte* payload, unsigned int length) {
         if (length >= 5 && !memcmp(payload, "SET:", 4)) set_position(atof((char*)&payload[4]));
 
         // Order to get the current position of the blind
-        if (length == 7 && !memcmp(payload, "GET_POS", 7)) client.publish(config.state_topic, config.current_position);
-    } 
+        if (length == 7 && !memcmp(payload, "GET_POS", 7)) {
+          char buffer[10];
+          dtostrf(config.current_position, 1, 2, buffer);
+          client.publish(config.state_topic, buffer);
+        }
+    }
 
     // Messages received on the chip from admin to change configuration
     // or to publish configuration elements from the chip
@@ -53,7 +57,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
             String msg = "";
             String response = "UNKNOWN_KEY";
-            for (int i = 0; i < length; i++) msg += (char)payload[i];
+            for (unsigned int i = 0; i < length; i++) msg += (char)payload[i];
 
             if (msg.indexOf(':') != -1) {
                 String key = msg.substring(msg.indexOf(':') + 1); 
@@ -77,7 +81,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
         } else if (length >= 10 && !memcmp(payload, "SET_CONFIG", 10)) {
             String msg = "";
-            for (int i = 0; i < length; i++) msg += (char)payload[i];
+            for (unsigned int i = 0; i < length; i++) msg += (char)payload[i];
 
             int firstColon = msg.indexOf(':');
             int secondColon = msg.indexOf(':', firstColon + 1);
