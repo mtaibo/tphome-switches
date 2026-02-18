@@ -28,7 +28,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
           // Create a temp buffer to manage the numbers introduced
           // on the payload received on the callback and introduce
           // a '\0' char to prevent unreadable chars from payload via atof();
-          char buffer_length = length - 4;
+          int buffer_length = length - 4;
           char buffer[buffer_length+1];
           buffer[buffer_length] = '\0';
 
