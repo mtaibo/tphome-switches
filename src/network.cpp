@@ -23,7 +23,20 @@ void callback(char* topic, byte* payload, unsigned int length) {
         }
 
         // Order to set the position of the blind to a determined position
-        if (length >= 5 && !memcmp(payload, "SET:", 4)) set_position(atof((char*)&payload[4]));
+        if (length >= 5 && !memcmp(payload, "SET:", 4)) {
+
+          // Create a temp buffer to manage the numbers introduced
+          // on the payload received on the callback and introduce
+          // a '\0' char to prevent unreadable chars from payload via atof();
+          char buffer_length = length - 4;
+          char buffer[buffer_length+1];
+          buffer[buffer_length] = '\0';
+
+          // Introduce payload content from pos 4 on the buffer
+          // where the '\0' was just introduced at the last position
+          memcpy(buffer, &payload[4], buffer_length);
+          set_position(atof(buffer));
+        }
 
         // Order to get the current position of the blind
         if (length == 7 && !memcmp(payload, "GET_POS", 7)) {
@@ -31,6 +44,9 @@ void callback(char* topic, byte* payload, unsigned int length) {
           dtostrf(config.current_position, 1, 2, buffer);
           client.publish(config.state_topic, buffer);
         }
+
+        // Enable access point
+        if (length >= 6 && !memcmp(payload, "SET_AP", 6)) access_point();
     }
 
     // Messages received on the chip from admin to change configuration
@@ -111,11 +127,11 @@ void callback(char* topic, byte* payload, unsigned int length) {
         } else if (length == 11 && !memcmp(payload, "SAVE_CONFIG", 11)) save_config();
 
         // Restart the chip to reload its setup with previous configs and loop
-        else if (length == 6 && !memcmp(payload, "REBOOT", 6)) ESP.restart();
+        else if (length == 6 && !memcmp(payload, "REBOOT", 6)) reboot();
 
         // Restart the chip to reload its default values, setup and loop
         else if (length == 12 && !memcmp(payload, "RESET_MEMORY", 12)) {
-            reset_memory(); client.publish(config.admin_state_topic, "default config restored");}
+            client.publish(config.admin_state_topic, " restoring default config"); reset_memory();}
     }
 }
 
@@ -165,8 +181,16 @@ bool mqtt_reconnect() {
 }
 
 void access_point() {
-  WiFiManager wm;
 
+  // Disconnect from WiFi to launch a WiFi signal as an access point
+  WiFi.stop(); client.disconnect();
+
+  // Make the connection led blink as a signal of access point state
+  blink(LED_GREEN, 1);
+
+  WiFiManager wm; // Create a WiFiManager object
+
+  // Set the mqtt server parameters that can change via access point
   WiFiManagerParameter mqtt_server_param("server", "MQTT Server IP", config.mqtt_server, 32);
   WiFiManagerParameter mqtt_user_param("user", "MQTT User", config.mqtt_user, 32);
   WiFiManagerParameter mqtt_pass_param("pass", "MQTT Password", config.mqtt_pass, 32);
@@ -175,15 +199,18 @@ void access_point() {
   wm.addParameter(&mqtt_user_param);
   wm.addParameter(&mqtt_pass_param);
 
-  if (!wm.startConfigPortal(config.device_id)) {
-        delay(3000);
-        ESP.restart();
-  }
+  // Execute wm.startConfigPortal with an if to prevent failures
+  // the signal from this command will remain until it is approved 
+  // on its WiFi signal access point web
+  if (!wm.startConfigPortal(config.device_id)) reboot();
 
+  // If ConfigPortal was successful, the new parameters will be
+  // copied to the new configuration and then saved to the chip
   strcpy(config.mqtt_server, mqtt_server_param.getValue());
   strcpy(config.mqtt_user, mqtt_user_param.getValue());
   strcpy(config.mqtt_pass, mqtt_pass_param.getValue());
 
+  blind(LED_GREEN, 0);
   save_config();
 }
 
@@ -208,8 +235,8 @@ void network_check() {
             // to check if the connection is available and successful
             if (mqtt_reconnect()) last_reconnect_attempt = 0;
         }
-    } 
-    
+    }
+
     // This line continues the loop of the client while Wi-Fi and MQTT server are connected,
     // the client loop is where topics and messages are redirected to callback 
     else client.loop();

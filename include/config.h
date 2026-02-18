@@ -39,7 +39,7 @@ struct Config {
     // Execution data
     bool is_moving;
     bool is_waiting;
-    bool is_in_ap;
+    bool network_timeout;
 
     float next_position;
 

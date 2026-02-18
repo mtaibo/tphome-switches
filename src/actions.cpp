@@ -207,7 +207,10 @@ void handle_button_action(int pin, unsigned long duration) {
 
     if (pin == BTN_TOP) {
         if (duration < config.short_pulse) set_position(100);
-        else if (duration > config.short_pulse && duration < config.long_pulse) ;
+        else if (duration > config.short_pulse && duration < config.long_pulse) {
+          if (config.current_position < config.down_position) set_position(config.down_position);
+          else if (config.current_position >= config.down_position) set_position(100);
+        }
         else if (duration > config.long_pulse) access_point();
     } 
     
@@ -222,7 +225,7 @@ void handle_button_action(int pin, unsigned long duration) {
           if (config.current_position > config.down_position) set_position(config.down_position);
           else if (config.current_position <= config.down_position) set_position(0);
       }
-      else if (duration > config.short_pulse && duration < config.long_pulse) ;
-      else if (duration > config.long_pulse) network_setup();
+      else if (duration > config.short_pulse && duration < config.long_pulse) set_position(0);
+      else if (duration > config.long_pulse);
     }
 }

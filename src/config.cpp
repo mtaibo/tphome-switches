@@ -14,7 +14,7 @@ void load_config() {
     // Execution data
     config.is_moving = false;
     config.is_waiting = false;
-    config.is_in_ap = false;
+    config.network_timeout = false;
 
     config.active_relay = -1;
     config.active_led = -1;
@@ -116,6 +116,24 @@ void save_config() {
     prefs.putFloat("down_pos", config.down_position);
 
     prefs.end();
+    reboot();
+}
+
+void reboot() {
+
+    // Make the main leds blink to make user aware of a reboot
+    for (unsigned int i = 0; i < 3; i++) {
+      digitalWrite(LED_TOP, HIGH);
+      digitalWrite(LED_MID, HIGH);
+      digitalWrite(LED_BOTTOM, HIGH);
+      delay(1000);
+      digitalWrite(LED_TOP, LOW);
+      digitalWrite(LED_MID, LOW);
+      digitalWrite(LED_BOTTOM, LOW);
+      delay(1000);
+    }
+
+    ESP.restart();
 }
 
 void reset_memory() {
@@ -123,7 +141,7 @@ void reset_memory() {
     prefs.clear();
     prefs.end();
     delay(2000);
-    ESP.restart();
+    reboot();
 }
 
 void pin_setup() {
