@@ -33,13 +33,15 @@ void access_point() {
   // on its WiFi signal access point web
   if (!wm.startConfigPortal(config.device_id)) reboot();
 
+  blink(LED_GREEN, 0);
+  digitalWrite(LED_GREEN, LOW);
+
   // If ConfigPortal was successful, the new parameters will be
   // copied to the new configuration and then saved to the chip
-  strcpy(config.mqtt_server, mqtt_server_param.getValue());
-  strcpy(config.mqtt_user, mqtt_user_param.getValue());
-  strcpy(config.mqtt_pass, mqtt_pass_param.getValue());
+  strncpy(config.mqtt_server, mqtt_server_param.getValue(), sizeof(config.mqtt_server) - 1);
+  strncpy(config.mqtt_user, mqtt_user_param.getValue(), sizeof(config.mqtt_user) - 1);
+  strncpy(config.mqtt_pass, mqtt_pass_param.getValue(), sizeof(config.mqtt_pass) - 1);
 
-  blink(LED_GREEN, 0);
   save_config();
 }
 
