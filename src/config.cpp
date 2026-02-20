@@ -7,11 +7,6 @@
 Config config;
 Preferences prefs;
 
-void soft_delay(unsigned long ms) {
-    esp_sleep_enable_timer_wakeup(ms * 1000);
-    esp_light_sleep_start();
-}
-
 void reboot() {
 
     // Make the main leds blink to make user aware of a reboot

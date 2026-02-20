@@ -22,5 +22,5 @@ void loop() {
     buttonMid.check();
     buttonBottom.check();
 
-    soft_delay(10);
+    delay(10);
 }
