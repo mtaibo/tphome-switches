@@ -17,22 +17,24 @@ The project began by integrating Tuya devices into a **Home Assistant** environm
 
 ### 📑 Supported Devices & Hardware
 
-#### 🪟 Blind Controllers (Matismo & others)
-* [**TYWE3S (ESP8266)**](#tywe3s-esp8266-matismo-blinds) - Standard for Matismo WiFi blinds. **[Current Stable]**
-* [**Beken BK7231**](#beken-series) - New Matismo hardware. *(Upcoming support)*
+#### 🪟 Blind Controllers
+* [**Matismo WIP100 (TYWE3S/ESP8266)**](#) - Description. *[Current Stable; New Features Upcoming]*
+* [**Matismo WIP100 (CB3S/BK7231N)**](#) - Description. *(Upcoming support)*
 
-#### 💡 Light Switches (BSeed & others)
-* [**Realtek RTL8710**](#realtek-rtl-series) - Common in BSeed WiFi switches. *(In progress)*
-* [**ESP32-WROOM**](#esp32-wroom) - Custom retrofitted switches. *(In progress)*
+#### 💡 Light Switches
+* [**BSeed Melody M1 (T34/BK7231N)**](#) - Description. *(Upcoming support)*
 
 ---
 
-## 🔧 TYWE3S (ESP8266) | Matismo Blinds
+# 🔧 Matismo WIP100 | TYWE3S (ESP8266)
 
 The **TYWE3S** is a low-power 32-bit CPU commonly found in Tuya devices. This documentation details the pinout configuration and logic for the chip when used for blind motor control.
 
 **Quick Navigation:**
+
 [📍 Pin Distribution](#pin-distribution) | [⚙️ Component Logic](#component-logic) | [🖱️ Input Actions](#input-actions) | [📡 MQTT Interface](#mqtt-commands)
+
+--- 
 
 ### Pin Distribution
 
@@ -69,7 +71,7 @@ All buttons follow standard pull-up logic:
 Relays control the current flow to the motor.
 * `HIGH`: Relay Active (Current ON).
 * `LOW`: Relay Inactive (Current OFF).
-* **Assignments:** Pin 13 is mapped to **L1** (`RELAY_UP` by default) and Pin 15 to **L3** (`RELAY_DOWN` by default).
+* **Assignments:** Pin 13 is mapped to **L1** and Pin 15 to **L3**.
 
 ---
 
@@ -98,14 +100,14 @@ Control and monitor the device using the following topics:
 
 ---
 
-## 🔧 Realtek RTL Series
-*(Documentation in progress...)*
+# 🔧 Matismo WIP100 | CB3S (BK7231N)
+*(Development in progress...)*
 
 [↑ Back to Top](#-tphome-switches)
 
 ---
 
-## 🔧 ESP32 WROOM
-*(Documentation in progress...)*
+# 🔧 BSeed Melody M1 | T34 (BK7231N)
+*(Development in progress...)*
 
 [↑ Back to Top](#-tphome-switches)
