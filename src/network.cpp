@@ -1,7 +1,7 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 #include <WiFiManager.h>
-#include <ESP8266httpUpdate.h>
+#include <ArduinoOTA.h>
 
 #include <actions.h>
 #include <config.h>
@@ -169,10 +169,22 @@ void callback(char* topic, byte* payload, unsigned int length) {
         } else if (length == 11 && !memcmp(payload, "SAVE_CONFIG", 11)) save_config();
 
         else if (length == 12 && !memcmp(payload, "NEW_FIRMWARE", 12)) {
-          digitalWrite(CONFIG_LED, LOW);
-          WiFiClient firmware_client;
-          t_httpUpdate_return ret = ESPhttpUpdate.update(firmware_client, "http://192.168.1.160:8088/firmware.bin");
-          reboot();
+
+          // Intializing communication
+          ArduinoOTA.setHostname(config.device_id);
+          ArduinoOTA.begin();
+
+          client.publish(config.admin_state_topic, String("Prepared to receive firmware on " + WiFi.localIP().toString() + "at 8266").c_str());
+          delay(500);
+
+          // Disconnecting MQTT server to give power only for ArduinoOTA
+          client.disconnect();
+          digitalWrite(CONFIG_LED, LOW); // Signal that mqtt was disconnected
+
+          while (true) {
+            ArduinoOTA.handle();
+            yield();
+          } reboot();
         }
 
         // Restart the chip to reload its setup with previous configs and loop
