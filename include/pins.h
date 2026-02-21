@@ -15,7 +15,7 @@
 #define BTN_TOP         12
 
 // --- RELAYS ---
-#define RELAY_DOWN      13  // L1
-#define RELAY_UP        15  // L3
+#define RELAY_UP      13  // L1
+#define RELAY_DOWN        15  // L3
 
 #endif
