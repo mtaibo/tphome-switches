@@ -1,8 +1,6 @@
 #ifndef ACTIONS
 #define ACTIONS
 
-#include <Arduino.h>
-
 enum Direction { UP = 1, DOWN = 0, STOP = -1 };
 
 void blink(int pin, int control);

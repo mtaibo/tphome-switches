@@ -1,5 +1,3 @@
-#include <Preferences.h>
-
 #include "default.h"
 #include "config.h"
 #include "pins.h"

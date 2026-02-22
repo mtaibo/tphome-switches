@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #include <Arduino.h>
+#include <Preferences.h>
 
 struct Config {
 

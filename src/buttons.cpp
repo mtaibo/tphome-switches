@@ -1,5 +1,3 @@
-#include <Arduino.h>
-
 #include "buttons.h"
 #include "actions.h"
 #include "config.h"

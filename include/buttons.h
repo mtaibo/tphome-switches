@@ -9,12 +9,12 @@ class Button {
         bool _wasPressed;
         bool _waitingRelease;
 
-        unsigned long get_duration(); 
-    
+        unsigned long get_duration();
+
     public:
         Button(int pin);
         void setup();
-        void check();        
+        void check();
 };
 
 extern Button buttonTop;
