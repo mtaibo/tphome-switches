@@ -55,7 +55,7 @@ The following table maps the available pins for the **Matismo** blind configurat
 ### ⚙️ Hardware Logic
 
 #### 💡 LEDs
-* **Green LED (Pin 0):** Simple state indicator.
+* **Green LED (Pin 0):** Simple network state indicator.
     * `HIGH`: LED On (Green).
     * `LOW`: LED Off.
 * **Status LEDs (Mid/Top/Low):** These are dual-color LEDs.
