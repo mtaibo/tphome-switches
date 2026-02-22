@@ -4,7 +4,7 @@
 #define DEVICE_ID "B364859"
 
 #define WIFI_SSID ""
-#define WIFI_PASS """
+#define WIFI_PASS ""
 
 #define MQTT_SERVER ""
 #define MQTT_PORT 1883

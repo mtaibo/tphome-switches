@@ -1,5 +1,3 @@
-#include <Preferences.h>
-
 #include "default.h"
 #include "config.h"
 #include "pins.h"
@@ -9,19 +7,18 @@ Preferences prefs;
 
 void reboot() {
 
-    // Make the main leds blink to make user aware of a reboot
-    for (unsigned int i = 0; i < 3; i++) {
-      digitalWrite(LED_TOP, HIGH);
-      digitalWrite(LED_MID, HIGH);
-      digitalWrite(LED_BOTTOM, HIGH);
-      delay(1000);
-      digitalWrite(LED_TOP, LOW);
-      digitalWrite(LED_MID, LOW);
-      digitalWrite(LED_BOTTOM, LOW);
-      delay(1000);
-    }
+  for (uint8_t i = 0; i < 3; i++) {
 
-    ESP.restart();
+    for (uint8_t pin : {LED_TOP, LED_MID, LED_BOTTOM}) {
+      digitalWrite(pin, HIGH);
+    } delay(1000);
+
+    for (uint8_t pin : {LED_TOP, LED_MID, LED_BOTTOM}) {
+      digitalWrite(pin, LOW);
+    } delay(1000);
+  }
+
+  ESP.restart();
 }
 
 void load_config() {
@@ -79,7 +76,7 @@ void load_config() {
     else prefs.getString("ip", config.mqtt_server, sizeof(config.mqtt_server));
 
     config.mqtt_port = prefs.getUInt("port", MQTT_PORT);
-    
+
     if (!prefs.isKey("user")) strcpy(config.mqtt_user, MQTT_USER);
     else prefs.getString("user", config.mqtt_user, sizeof(config.mqtt_user));
     if (!prefs.isKey("mqtt_pass")) strcpy(config.mqtt_pass, MQTT_PASS);
@@ -140,26 +137,17 @@ void reset_memory() {
     prefs.begin("prefs", false);
     prefs.clear();
     prefs.end();
-    delay(2000);
     reboot();
 }
 
-void pin_setup() {
-
-   // This both lines below activate the pin to allow
-    // the blue leds to turn on, otherwise, they'll be blocked
-    pinMode(CONFIG_LED, OUTPUT);
-    digitalWrite(CONFIG_LED, HIGH);
-
-    // Loop to turn every output pin to output mode and low
-    int output_pins[] = {LED_TOP, LED_MID, LED_BOTTOM, LED_GREEN, RELAY_UP, RELAY_DOWN};
-    for (int i=0; i<6; i++) {
-        pinMode(output_pins[i], OUTPUT);
-        digitalWrite(output_pins[i], LOW);
-    }
-}
-
 void config_setup() {
-    pin_setup();
-    load_config();
+
+  pinMode(CONFIG_LED, OUTPUT);
+  digitalWrite(CONFIG_LED, HIGH);
+
+  for (uint8_t pin : {LED_TOP, LED_MID, LED_BOTTOM, LED_GREEN, RELAY_UP, RELAY_DOWN}) {
+    pinMode(pin, OUTPUT); digitalWrite(pin, LOW);
+  }
+
+  load_config();
 }

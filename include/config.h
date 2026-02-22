@@ -2,6 +2,7 @@
 #define CONFIG_H
 
 #include <Arduino.h>
+#include <Preferences.h>
 
 struct Config {
 
@@ -79,8 +80,6 @@ void save_config();
 void reboot();
 void reset_memory();
 
-// Setup functions
-void pin_setup();
 void config_setup();
 
 #endif

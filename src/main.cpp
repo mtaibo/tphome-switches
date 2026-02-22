@@ -1,6 +1,6 @@
-#include "actions.h"
 #include "network.h"
 #include "buttons.h"
+#include "actions.h"
 #include "config.h"
 
 void setup() {

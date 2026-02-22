@@ -3,9 +3,8 @@
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <ArduinoOTA.h>
 
-// Different objects from the imports above
-// to control the Wifi of the chip and the MQTT server
 extern WiFiClient espClient;
 extern PubSubClient client;
 
@@ -14,7 +13,7 @@ void network_check();
 
 void access_point();
 
-void mqtt_reconnect();
+bool mqtt_reconnect();
 void callback(char* topic, byte* payload, unsigned int length);
 
 #endif

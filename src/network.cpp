@@ -1,10 +1,7 @@
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
-#include <ArduinoOTA.h>
-
-#include <actions.h>
-#include <config.h>
-#include <pins.h>
+#include "network.h"
+#include "actions.h"
+#include "config.h"
+#include "pins.h"
 
 WiFiClient espClient;
 PubSubClient client(espClient);
