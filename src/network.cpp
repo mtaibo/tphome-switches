@@ -163,8 +163,9 @@ void network_setup() {
 
     // Wi-Fi configuration
     WiFi.mode(WIFI_STA);
-    WiFi.setSleepMode(WIFI_MODEM_SLEEP);
     WiFi.begin(config.wifi_ssid, config.wifi_pass);
+    delay(500);
+    WiFi.setSleepMode(WIFI_MODEM_SLEEP);
 
     // MQTT server configuration
     client.setServer(config.mqtt_server, config.mqtt_port);
