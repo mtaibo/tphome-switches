@@ -7,6 +7,11 @@
 // Config struct defined as packed to save memory padding
 struct __attribute__((__packed__)) Config {
 
+  // Identification
+  char device_id[16];
+  char room[16];
+  char name[16];
+
   // WiFi
   char wifi_ssid[24];
   char wifi_pass[32];
@@ -16,11 +21,6 @@ struct __attribute__((__packed__)) Config {
   char mqtt_user[15];
   char mqtt_pass[15];
   uint16_t mqtt_port;
-
-  // Identification
-  char device_id[16];
-  char room[16];
-  char name[16];
 
   // Preferences
   uint16_t up_time;

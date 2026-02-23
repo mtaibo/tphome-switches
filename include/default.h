@@ -1,8 +1,6 @@
 #ifndef DEFAULT_H
 #define DEFAULT_H
 
-#include "credentials.h"
-
 // ---------     Identification     ---------
 
 #define DEF_DEVICE_ID               "B364859"
@@ -11,10 +9,13 @@
 
 // ---------     Preferences        ---------
 
-#define DEF_UP_TIME                    300000
+#define DEF_UP_TIME                     30000
 #define DEF_DOWN_TIME                   30000
 #define DEF_DOWN_POSITION                  20
 
 #define DEF_MOTOR_SAFE_TIME              1000
+
+// ------- WiFi / MQTT Credentials  ---------
+#include "credentials.h"
 
 #endif
