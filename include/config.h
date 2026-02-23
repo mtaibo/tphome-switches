@@ -48,12 +48,6 @@ struct __attribute__((__packed__)) Config {
   bool is_waiting;
   bool is_blinking;
   bool pause_control;
-
-  // Blink
-  int blinking_state;
-  uint8_t blinking_led;
-  uint16_t blink_time;
-  uint16_t last_blink;
 };
 
 extern Config config;

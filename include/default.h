@@ -3,11 +3,18 @@
 
 #include "credentials.h"
 
-#define TYPE "blinds"
-#define ROOM "lounge"
-#define NAME "big-blind"
+// ---------     Identification     ---------
 
-#define UP_TIME 40000
-#define DOWN_TIME 40000
+#define DEF_DEVICE_ID               "B364859"
+#define DEF_ROOM          "secondary-bedroom"
+#define DEF_NAME                      "blind"
+
+// ---------     Preferences        ---------
+
+#define DEF_UP_TIME                    300000
+#define DEF_DOWN_TIME                   30000
+#define DEF_DOWN_POSITION                  20
+
+#define DEF_MOTOR_SAFE_TIME              1000
 
 #endif
