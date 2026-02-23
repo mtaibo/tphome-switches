@@ -1,79 +1,63 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <Arduino.h>
-#include <Preferences.h>
+#include <Arduino.h> // Basic Arduino module
+#include <Preferences.h> // Module to save relevant config on flash memory
 
-struct Config {
+// Config struct defined as packed to save memory padding
+struct __attribute__((__packed__)) Config {
 
-    // Device ID
-    char device_id[16];
+  // WiFi
+  char wifi_ssid[24];
+  char wifi_pass[32];
 
-    // WIFI configuration
-    char wifi_ssid[32];
-    char wifi_pass[64];
+  // MQTT
+  char mqtt_server[20];
+  char mqtt_user[15];
+  char mqtt_pass[15];
+  uint16_t mqtt_port;
 
-    // MQTT configuration
-    char mqtt_server[32];
-    uint8_t mqtt_port;
+  // Identification
+  char device_id[16];
+  char room[16];
+  char name[16];
 
-    char mqtt_user[32];
-    char mqtt_pass[32];
+  // Preferences
+  uint16_t up_time;
+  uint16_t down_time;
+  uint16_t down_position;
 
-    // Topic configuration
-    char type[32];
-    char room[32];
-    char name[32];
+  uint16_t mid_led_time;
+  uint16_t motor_safe_time;
 
-    char set_topic[128];
-    char state_topic[128];
-    char admin_set_topic[64];
-    char admin_state_topic[64];
+  uint16_t short_pulse;
+  uint16_t long_pulse;
 
-    // Blind configuration
-    unsigned long up_time;
-    unsigned long down_time;
+  // Execution
+  uint16_t current_position;
+  uint16_t next_position;
 
-    float down_position;
-    float current_position;
+  uint8_t active_relay;
+  uint8_t active_led;
 
-    // Execution data
-    bool is_moving;
-    bool is_waiting;
-    bool network_timeout;
+  uint8_t pending_relay;
+  uint8_t pending_led;
 
-    float next_position;
+  // States
+  bool is_moving;
+  bool is_waiting;
+  bool is_blinking;
+  bool pause_control;
 
-    uint8_t active_relay;
-    uint8_t active_led;
-    uint8_t pending_relay;
-    uint8_t pending_led;
-
-    // Time execution data
-    bool pause_control;
-    unsigned long stop_time;
-    unsigned long stop_led_time;
-    unsigned long current_time_limit;
-    unsigned long last_cycle_time;
-
-    // Blinking control
-    bool is_blinking;
-    uint8_t blinking_led;
-    int blinking_state;
-    unsigned long blink_time;
-    unsigned long last_blink;
-
-    // Preferences
-    unsigned long mid_led_time;
-    unsigned long motor_safe_time;
-
-    unsigned long short_pulse;
-    unsigned long long_pulse;
+  // Blink
+  int blinking_state;
+  uint8_t blinking_led;
+  uint16_t blink_time;
+  uint16_t last_blink;
 };
 
 extern Config config;
 
-// Config file managment
 void load_config();
 void save_config();
 
