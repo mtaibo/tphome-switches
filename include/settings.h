@@ -10,13 +10,13 @@
 
 #define NO_PIN 255
 
-// Config structs defined as packed to save memory padding
+// Config, Pref and State structs defined as packed to save memory padding
 struct __attribute__((__packed__)) Config {
 
   // Identification
-  char device_id[IDENTITY_SIZE]; // Device ID must follow a standard where it has a letter B for blind o L for light, and 6 numbers after that letter
-  char room[IDENTITY_SIZE]; // Room name where the device belong
-  char name[IDENTITY_SIZE]; // Blind or light name on each room
+  char device_id[IDENTITY_SIZE];
+  char room[IDENTITY_SIZE];
+  char name[IDENTITY_SIZE];
 
   // WiFi
   char wifi_ssid[WIFI_SIZE];
@@ -26,12 +26,10 @@ struct __attribute__((__packed__)) Config {
   char mqtt_ip[MQTT_SIZE];
   char mqtt_user[MQTT_SIZE];
   char mqtt_pass[MQTT_SIZE];
-  uint16_t mqtt_port; // This will be a 16 bit usigned int to be able to reach every port
+  uint16_t mqtt_port;
 };
 
 struct __attribute__((__packed__)) Pref {
-
-  // Times on this app will be measured in 1 cs = 10 ms, so 1 second looks like 100
 
   uint16_t up_time;
   uint16_t down_time;
@@ -42,7 +40,7 @@ struct __attribute__((__packed__)) Pref {
   uint16_t short_pulse;
   uint16_t long_pulse;
 
-  uint16_t down_position; // Position will be saved on 16 bit with 2 decimal numbers, which means 100.00% will be 10000 and 37.19% will be 3719
+  uint16_t down_position;
 };
 
 struct __attribute__((__packed__)) State {
@@ -67,6 +65,7 @@ struct __attribute__((__packed__)) State {
 extern Config config;
 extern Pref pref;
 extern State state;
+
 
 void load_config();
 void save_config();
