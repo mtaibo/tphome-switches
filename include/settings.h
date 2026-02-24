@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef SETTINGS_H
+#define SETTINGS_H
 
 #include <Arduino.h> // Basic Arduino module
 #include <Preferences.h> // Module to save relevant config on flash memory
@@ -75,4 +75,4 @@ void reset_memory();
 
 void config_setup();
 
-#endif
+#endif // SETTINGS_H
