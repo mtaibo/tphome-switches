@@ -5,7 +5,6 @@ DEVICE_ID="B364859"
 LOCATION="secondary_bedroom"
 DEVICE_TYPE="blind"
 
-# Topics base
 ADMIN_BASE="tphome/admin"
 BLIND_BASE="tphome/blinds/$LOCATION/$DEVICE_TYPE"
 
