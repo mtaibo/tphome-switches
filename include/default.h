@@ -33,7 +33,7 @@
 #define DEF_SHORT_PULSE                   300 //  3.00 seconds
 #define DEF_LONG_PULSE                   1000 // 10.00 seconds
 
-// ---------     Default State      ---------
+// ---------       States           ---------
 
 #define DEF_CURRENT_POSITION             5000 // 50%              -   Initialize blind position at 50% to allow user to move blind up and down to begin calibration
 #define DEF_NEXT_POSITION                5000 // 50%
@@ -48,5 +48,7 @@
 #define DEF_IS_WAITING                  false
 #define DEF_IS_BLINKING                 false
 #define DEF_PAUSE_CONTROL               false
+
+void default(); // Function to load default values on every settings variable
 
 #endif

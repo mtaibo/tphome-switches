@@ -29,7 +29,7 @@ struct __attribute__((__packed__)) Config {
   uint16_t mqtt_port;
 };
 
-struct __attribute__((__packed__)) Pref {
+struct __attribute__((__packed__)) Prefs {
 
   uint16_t up_time;
   uint16_t down_time;
@@ -63,7 +63,7 @@ struct __attribute__((__packed__)) State {
 };
 
 extern Config config;
-extern Pref pref;
+extern Prefs prefs;
 extern State state;
 
 
