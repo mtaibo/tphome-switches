@@ -18,7 +18,7 @@ The project began by integrating Tuya devices into a **Home Assistant** environm
 ### 📑 Supported Devices & Hardware
 
 #### 🪟 Blind Controllers
-* [**Matismo WIP100 (TYWE3S/ESP8266)**](#-matismo-wip100--tywe3s-esp8266) - Description. *[Current Stable; New Features Upcoming]*
+* [**Matismo WIP100 (TYWE3S/ESP8266)**](#-matismo-wip100--tywe3s-esp8266) - Description. *(Current stable)*
 * [**Matismo WIP100 (CB3S/BK7231N)**](#-matismo-wip100--cb3s-bk7231n) - Description. *(Upcoming support)*
 
 #### 💡 Light Switches
