@@ -14,7 +14,7 @@ void save_state() {
   storage.end();
 }
 
-void save_config() {
+void save_settings() {
 
   // Load the more persistent settings divisions from storage to check
   // if they are the same as the intended to save
@@ -53,7 +53,7 @@ void load_settings() {
 
   // Check if every block on memory exists and corresponds to its real memory size
   if (r1 != sizeof(Config) || r2 != sizeof(Prefs) || r3 != sizeof(State)) {
-    load_defaults(); save_config(); // If not, load default settings and save them on memory
+    defaults(); save_settings(); // Load default settings and save them on memory
   }
 }
 
@@ -68,5 +68,5 @@ void config_setup() {
     pinMode(pin, OUTPUT); digitalWrite(pin, LOW);
   }
 
-  load_settings();
+  load_settings(); // Load settings stored on flash memory or load default settings if not found
 }
