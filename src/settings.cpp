@@ -10,7 +10,7 @@ Preferences storage;
 
 void save_config() {
 
-    storage.begin("prefs", false); // Open storage on write mode (false)
+    storage.begin("storage", false); // Open storage on write mode (false)
 
     // Save every settings division to storage
     storage.putBytes("c", &config, sizeof(Config));
