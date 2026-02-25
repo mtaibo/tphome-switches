@@ -67,11 +67,8 @@ extern Prefs prefs;
 extern State state;
 
 
-void load_config();
-void save_config();
-
-void reboot();
-void reset_memory();
+void save_settings();
+void load_settings();
 
 void config_setup();
 

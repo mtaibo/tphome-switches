@@ -48,5 +48,5 @@ void config_setup() {
     pinMode(pin, OUTPUT); digitalWrite(pin, LOW);
   }
 
-  load_config();
+  load_settings();
 }
