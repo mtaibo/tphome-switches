@@ -67,6 +67,11 @@ extern Prefs prefs;
 extern State state;
 
 
+void reboot();
+void factory_reset();
+
+void save_state();
+
 void save_settings();
 void load_settings();
 

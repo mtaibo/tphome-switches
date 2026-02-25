@@ -8,6 +8,19 @@ State state;
 
 Preferences storage;
 
+void reboot() {}
+
+// Clear every division on the storage to set
+// default settings again
+void factory_reset() {
+  storage.begin("storage", false);
+  storage.clear();
+  storage.end();
+  reboot();
+}
+
+// Save only the state settings struct, this function
+// will be called just when the blind was moving and stops
 void save_state() {
   storage.begin("storage", false)
   storage.putBytes("s", &state, sizeof(State));
