@@ -8,16 +8,36 @@ State state;
 
 Preferences storage;
 
+void save_state() {
+  storage.begin("storage", false)
+  storage.putBytes("s", &state, sizeof(State));
+  storage.end();
+}
+
 void save_config() {
 
-    storage.begin("storage", false); // Open storage on write mode (false)
+  // Load the more persistent settings divisions from storage to check
+  // if they are the same as the intended to save
+  Config current_stored_config;
+  Prefs current_stored_prefs;
 
-    // Save every settings division to storage
+  storage.begin("storage", true); // Open storage on read-only mode (true)
+
+  storage.getBytes("c", &current_stored_config, sizeof(Config));
+  storage.getBytes("p", &current_stored_prefs, sizeof(Prefs));
+
+  storage.end();
+
+  storage.begin("storage", false); // Open storage on write mode (false)
+
+  // Save every settings division to storage
+  if (memcmp(&config, &current_stored_config, sizeof(Config)) != 0) 
     storage.putBytes("c", &config, sizeof(Config));
+  if (memcmp(&prefs, &current_stored_prefs, sizeof(Prefs)) != 0) 
     storage.putBytes("p", &prefs, sizeof(Prefs));
-    storage.putBytes("s", &state, sizeof(State));
+  storage.putBytes("s", &state, sizeof(State));
 
-    storage.end();
+  storage.end();
 }
 
 void load_settings() {
