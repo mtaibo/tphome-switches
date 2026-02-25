@@ -8,9 +8,34 @@ State state;
 
 Preferences storage;
 
-void load_settings() {}
-void save_config() {}
-void reset_memory() {}
+void save_config() {
+
+    storage.begin("prefs", false); // Open storage on write mode (false)
+
+    // Save every settings division to storage
+    storage.putBytes("c", &config, sizeof(Config));
+    storage.putBytes("p", &prefs, sizeof(Prefs));
+    storage.putBytes("s", &state, sizeof(State));
+
+    storage.end();
+}
+
+void load_settings() {
+
+  storage.begin("storage", true); // Open storage on flash memory on only-read mode (true)
+
+  // Load every settings division from storage
+  size_t r1 = storage.getBytes("c", &config, sizeof(Config));
+  size_t r2 = storage.getBytes("p", &prefs, sizeof(Prefs));
+  size_t r3 = storage.getBytes("s", &state, sizeof(State));
+
+  storage.end();
+
+  // Check if every block on memory exists and corresponds to its real memory size
+  if (r1 != sizeof(Config) || r2 != sizeof(Prefs) || r3 != sizeof(State)) {
+    load_defaults(); save_config(); // If not, load default settings and save them on memory
+  }
+}
 
 void config_setup() {
 
