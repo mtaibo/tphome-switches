@@ -3,8 +3,8 @@
 
 // ---------      WiFi     ------------
 
-#define WIFI_SSID           "WIFI-TP24"
-#define WIFI_PASS     "S36M28LKLiAB13Z"
+#define DEF_WIFI_SSID       "WIFI-TP24"
+#define DEF_WIFI_PASS "S36M28LKLiAB13Z"
 
 // ---------      MQTT     ------------
 

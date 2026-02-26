@@ -1,6 +1,8 @@
 #include "pins.h"
-#include "config.h"
-#include "default.h"
+#include "settings.h"
+#include "defaults.h"
+
+#include <Preferences.h>
 
 Config config;
 Prefs prefs;
@@ -22,7 +24,7 @@ void factory_reset() {
 // Save only the state settings struct, this function
 // will be called just when the blind was moving and stops
 void save_state() {
-  storage.begin("storage", false)
+  storage.begin("storage", false);
   storage.putBytes("s", &state, sizeof(State));
   storage.end();
 }
@@ -73,11 +75,11 @@ void load_settings() {
 void config_setup() {
 
   // Send current through the pin that provides it to blue leds
-  pinMode(PIN_LED_CONF, OUTPUT);
-  digitalWrite(PIN_LED_CONF, HIGH);
+  pinMode(Pins::LED_CONFIG, OUTPUT);
+  digitalWrite(Pins::LED_CONFIG, HIGH);
 
   // Turn every other pin to output to allow HIGH and LOW state, and LOW to begin with every pin off
-  for (uint8_t pin : {PIN_LED_TOP, PIN_LED_MID, PIN_LED_BOTTOM, PIN_LED_GREEN, PIN_RELAY_UP, PIN_RELAY_DOWN}) {
+  for (uint8_t pin : {Pins::LED_TOP, Pins::LED_MID, Pins::LED_BTM, Pins::LED_GREEN, Pins::RELAY_UP, Pins::RELAY_DOWN}) {
     pinMode(pin, OUTPUT); digitalWrite(pin, LOW);
   }
 

@@ -1,71 +1,45 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <Arduino.h> // Basic Arduino module
-#include <Preferences.h> // Module to save relevant config on flash memory
+#include <stdint.h> // Module for uint8_t and uint16_t
 
+/* Module that defines which settings should include, 
+ * the blinds one or the lights one. */
+#if defined(DEVICE_TYPE_BLIND)
+    #include "settings_blind.h"
+#elif defined(DEVICE_TYPE_LIGHT)
+    #include "settings_light.h"
+#endif
+
+/* Char size definitions */
 #define IDENTITY_SIZE 16
 #define WIFI_SIZE 32
 #define MQTT_SIZE 24
 
-#define NO_PIN 255
+#define NO_PIN 255 // Max value on 8 bits
 
-// Config, Pref and State structs defined as packed to save memory padding
+/* Config struct for network configuration and device identification */
 struct __attribute__((__packed__)) Config {
 
-  // Identification
-  char device_id[IDENTITY_SIZE];
-  char room[IDENTITY_SIZE];
-  char name[IDENTITY_SIZE];
+    // Identity
+    char device_id[IDENTITY_SIZE];
+    char room[IDENTITY_SIZE];
+    char name[IDENTITY_SIZE];
 
-  // WiFi
-  char wifi_ssid[WIFI_SIZE];
-  char wifi_pass[WIFI_SIZE];
+    // WiFi
+    char wifi_ssid[WIFI_SIZE];
+    char wifi_pass[WIFI_SIZE];
 
-  // MQTT
-  char mqtt_ip[MQTT_SIZE];
-  char mqtt_user[MQTT_SIZE];
-  char mqtt_pass[MQTT_SIZE];
-  uint16_t mqtt_port;
-};
-
-struct __attribute__((__packed__)) Prefs {
-
-  uint16_t up_time;
-  uint16_t down_time;
-
-  uint16_t mid_led_time;
-  uint16_t motor_safe_time;
-
-  uint16_t short_pulse;
-  uint16_t long_pulse;
-
-  uint16_t down_position;
-};
-
-struct __attribute__((__packed__)) State {
-
-  // Execution
-  uint16_t current_position;
-  uint16_t next_position;
-
-  uint8_t active_relay;
-  uint8_t active_led;
-
-  uint8_t pending_relay;
-  uint8_t pending_led;
-
-  // States
-  bool is_moving;
-  bool is_waiting;
-  bool is_blinking;
-  bool pause_control;
+    // MQTT
+    char mqtt_ip[MQTT_SIZE];
+    char mqtt_user[MQTT_SIZE];
+    char mqtt_pass[MQTT_SIZE];
+    uint16_t mqtt_port;
 };
 
 extern Config config;
 extern Prefs prefs;
 extern State state;
-
 
 void reboot();
 void factory_reset();
@@ -77,4 +51,4 @@ void load_settings();
 
 void config_setup();
 
-#endif // SETTINGS_H
+#endif  // SETTINGS_H

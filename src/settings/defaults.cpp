@@ -1,18 +1,18 @@
 #include <string.h>
 
 #include "settings.h"
-#include "default.h"
+#include "defaults.h"
 
 
-void default() {
+void defaults() {
 
   // ------- WiFi / MQTT Credentials  ---------
 
   strlcpy(config.wifi_ssid, DEF_WIFI_SSID, sizeof(config.wifi_ssid));
   strlcpy(config.wifi_pass, DEF_WIFI_PASS, sizeof(config.wifi_pass));
 
-  strlcpy(config.mqtt_server, MQTT_SERVER, sizeof(config.mqtt_server));
-  config.mqtt_port = MQTT_PORT;
+  strlcpy(config.mqtt_ip, DEF_MQTT_IP, sizeof(config.mqtt_ip));
+  config.mqtt_port = DEF_MQTT_PORT;
 
   // ---------     Identification     ---------
 
@@ -25,7 +25,7 @@ void default() {
   prefs.up_time = DEF_UP_TIME;
   prefs.down_time = DEF_DOWN_TIME;
 
-  prefs.mid_led_time = DEF_MID_LED_TIME;
+  prefs.mid_led_time = DEF_STOP_LED_TIME;
   prefs.motor_safe_time = DEF_MOTOR_SAFE_TIME;
 
   prefs.short_pulse = DEF_SHORT_PULSE;
