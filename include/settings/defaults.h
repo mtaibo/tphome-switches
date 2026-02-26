@@ -1,5 +1,5 @@
-#ifndef DEFAULT_H
-#define DEFAULT_H
+#ifndef DEFAULTS_H
+#define DEFAULTS_H
 
 // ~~~~~~~~~~~~~~~~~~~~         Measures         ~~~~~~~~~~~~~~~~~~~~~~~
 //
@@ -51,4 +51,4 @@
 
 void default(); // Function to load default values on every settings variable
 
-#endif
+#endif // DEFAULTS_H
