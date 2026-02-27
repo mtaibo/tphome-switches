@@ -1,6 +1,8 @@
 #ifndef PINS_H
 #define PINS_H
 
+// clang-format off
+
 #include <stdint.h> // Lighter library than Arduino just for variable types
 
 // ~~~~~~~~~~~~~~~~~~~~        Hardware Logic        ~~~~~~~~~~~~~~~~~~~~
@@ -37,5 +39,7 @@ namespace Pins {
   static constexpr uint8_t RELAY_UP   = 13; // Output L1
   static constexpr uint8_t RELAY_DOWN = 15; // Output L3
 }
+
+// clang-format on
 
 #endif // PINS_H

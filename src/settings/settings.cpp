@@ -21,8 +21,8 @@ void factory_reset() {
     reboot();
 }
 
-// Save only the state settings struct, this function
-// will be called just when the blind was moving and stops
+// Save only the state settings struct, this function will be called just when
+// the blind was moving and stops
 void save_state() {
     storage.begin("storage", false);
     storage.putBytes("s", &state, sizeof(State));
@@ -37,8 +37,8 @@ void save_settings() {
 
     storage.begin("storage", true); // Open storage on read-only mode (true)
 
-    // Load the more persistent settings divisions from storage to check
-    // if they are the same as the intended to save
+    // Load the more persistent settings divisions from storage to check if they
+    // are the same as the intended to save
     storage.getBytes("c", &current_stored_config, sizeof(Config));
     storage.getBytes("p", &current_stored_prefs, sizeof(Prefs));
 
@@ -46,13 +46,15 @@ void save_settings() {
 
     storage.begin("storage", false); // Open storage on write mode (false)
 
-    // Save every settings division to storage if needed
-    if (memcmp(&config, &current_stored_config, sizeof(Config)) !=
-        0) // Check if every bit of information on current_stored_config and
-           // current config are the same
+    // Save every settings division to storage if needed and check if every bit
+    // of information on current_stored_config and current config are the same.
+
+    if (memcmp(&config, &current_stored_config, sizeof(Config)) != 0)
         storage.putBytes("c", &config, sizeof(Config));
+
     if (memcmp(&prefs, &current_stored_prefs, sizeof(Prefs)) != 0)
         storage.putBytes("p", &prefs, sizeof(Prefs));
+
     storage.putBytes("s", &state, sizeof(State));
 
     storage.end();
@@ -60,9 +62,8 @@ void save_settings() {
 
 void load_settings() {
 
-    storage.begin(
-        "storage",
-        true); // Open storage on flash memory on only-read mode (true)
+    // Open storage on flash memory on only-read mode (true)
+    storage.begin("storage", true);
 
     // Load every settings division from storage
     size_t r1 = storage.getBytes("c", &config, sizeof(Config));
@@ -75,24 +76,8 @@ void load_settings() {
     // size
     if (r1 != sizeof(Config) || r2 != sizeof(Prefs) || r3 != sizeof(State)) {
         defaults();
-        save_settings(); // Load default settings and save them on memory
+        save_settings();
     }
 }
 
-void config_setup() {
-
-    // Send current through the pin that provides it to blue leds
-    pinMode(Pins::LED_CONFIG, OUTPUT);
-    digitalWrite(Pins::LED_CONFIG, HIGH);
-
-    // Turn every other pin to output to allow HIGH and LOW state, and LOW to
-    // begin with every pin off
-    for (uint8_t pin : {Pins::LED_TOP, Pins::LED_MID, Pins::LED_BTM,
-                        Pins::LED_GREEN, Pins::RELAY_UP, Pins::RELAY_DOWN}) {
-        pinMode(pin, OUTPUT);
-        digitalWrite(pin, LOW);
-    }
-
-    load_settings(); // Load settings stored on flash memory or load default
-                     // settings if not found
-}
+void config_setup() { load_settings(); }
