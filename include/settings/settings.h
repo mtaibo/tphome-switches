@@ -3,7 +3,7 @@
 
 #include <stdint.h> // Module for uint8_t and uint16_t
 
-/* Module that defines which settings should include, 
+/* Module that defines which settings should include,
  * the blinds one or the lights one. */
 #if defined(DEVICE_TYPE_BLIND)
     #include "settings_blind.h"
@@ -13,8 +13,8 @@
 
 /* Char size definitions */
 #define IDENTITY_SIZE 16
-#define WIFI_SIZE 32
-#define MQTT_SIZE 24
+#define WIFI_SIZE     32
+#define MQTT_SIZE     24
 
 #define NO_PIN 255 // Max value on 8 bits
 
@@ -51,4 +51,4 @@ void load_settings();
 
 void config_setup();
 
-#endif  // SETTINGS_H
+#endif // SETTINGS_H

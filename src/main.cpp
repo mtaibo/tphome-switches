@@ -17,7 +17,7 @@ void loop() {
 
     update_actions();
     network_check();
- 
+
     buttonTop.check();
     buttonMid.check();
     buttonBottom.check();

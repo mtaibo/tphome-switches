@@ -1,6 +1,8 @@
 #ifndef CREDENTIALS_H
 #define CREDENTIALS_H
 
+// clang-format off
+
 // -----------      WiFi     -------------
 
 #define DEF_WIFI_SSID                   ""
@@ -12,5 +14,7 @@
 #define DEF_MQTT_PORT                 1883
 #define DEF_MQTT_USER                   ""
 #define DEF_MQTT_PASS                   ""
+
+// clang-format on
 
 #endif

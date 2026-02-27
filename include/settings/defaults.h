@@ -1,6 +1,8 @@
 #ifndef DEFAULTS_H
 #define DEFAULTS_H
 
+// clang-format off
+
 // ~~~~~~~~~~~~~~~~~~~~         Measures         ~~~~~~~~~~~~~~~~~~~~~~~
 //
 //  Variables with this measures, time or pos are 16 bits unsigned ints
@@ -55,6 +57,8 @@
 #define DEF_PAUSE_CONTROL               false
 
 /* Lights */
+
+// clang-format on
 
 void defaults(); // Function to load default values on every settings struct
 
