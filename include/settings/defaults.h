@@ -23,6 +23,7 @@
 
 // ---------     Preferences        ---------
 
+/* Buttons */
 #define DEF_SHORT_PULSE                   100 //  1.00 seconds
 #define DEF_LONG_PULSE                    500 //  5.00 seconds
 
@@ -31,8 +32,8 @@
 #define DEF_DOWN_TIME                    4000 // 40.00 seconds
 #define DEF_DOWN_POSITION                2000 // 20%              -   This value is used to partially close the blind to a memorised position
 
-#define DEF_MOTOR_SAFE_TIME               100 //  1.00 seconds    -   This value is a safe time for the motor between going up and down
-#define DEF_STOP_LED_TIME                  50 //  0.50 seconds
+#define DEF_MOTOR_SAFE_TIME               100 //  1.00 seconds    -   This value is a safe time to prevent overheating the motor by changing direction really fast
+#define DEF_STOP_LED_TIME                  50 //  0.50 seconds    -   This is a timer for the mid led (stop led) to turn it off after clicking on it
 
 /* Lights */
 

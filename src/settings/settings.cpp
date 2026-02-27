@@ -2,7 +2,7 @@
 #include "settings.h"
 #include "defaults.h"
 
-#include <Preferences.h>
+#include <Preferences.h> // Lib to save information on flash memory
 
 Config config;
 Prefs prefs;
@@ -31,13 +31,14 @@ void save_state() {
 
 void save_settings() {
 
-  // Load the more persistent settings divisions from storage to check
-  // if they are the same as the intended to save
+  // Temp variables to store current config and prefs on the flash memory
   Config current_stored_config;
   Prefs current_stored_prefs;
 
   storage.begin("storage", true); // Open storage on read-only mode (true)
 
+  // Load the more persistent settings divisions from storage to check
+  // if they are the same as the intended to save
   storage.getBytes("c", &current_stored_config, sizeof(Config));
   storage.getBytes("p", &current_stored_prefs, sizeof(Prefs));
 
@@ -45,10 +46,10 @@ void save_settings() {
 
   storage.begin("storage", false); // Open storage on write mode (false)
 
-  // Save every settings division to storage
-  if (memcmp(&config, &current_stored_config, sizeof(Config)) != 0) 
+  // Save every settings division to storage if needed
+  if (memcmp(&config, &current_stored_config, sizeof(Config)) != 0) // Check if every bit of information on current_stored_config and current config are the same
     storage.putBytes("c", &config, sizeof(Config));
-  if (memcmp(&prefs, &current_stored_prefs, sizeof(Prefs)) != 0) 
+  if (memcmp(&prefs, &current_stored_prefs, sizeof(Prefs)) != 0)
     storage.putBytes("p", &prefs, sizeof(Prefs));
   storage.putBytes("s", &state, sizeof(State));
 
