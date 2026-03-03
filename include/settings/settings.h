@@ -2,6 +2,7 @@
 #define SETTINGS_H
 
 #include <stdint.h> // Module for uint8_t and uint16_t
+#include "defaults.h"
 
 /* Module that defines which settings should include,
  * the blinds one or the lights one. */
@@ -11,44 +12,39 @@
     #include "settings_light.h"
 #endif
 
-/* Char size definitions */
-#define IDENTITY_SIZE 16
-#define WIFI_SIZE     32
-#define MQTT_SIZE     24
 
-#define NO_PIN 255 // Max value on 8 bits
+namespace Settings {
 
-/* Config struct for network configuration and device identification */
-struct __attribute__((__packed__)) Config {
+    struct __attribute__((__packed__)) Config {
 
-    // Identity
-    char device_id[IDENTITY_SIZE];
-    char room[IDENTITY_SIZE];
-    char name[IDENTITY_SIZE];
+        // Identity
+        char device_id[IDENTITY_SIZE];
+        char room[IDENTITY_SIZE];
+        char name[IDENTITY_SIZE];
 
-    // WiFi
-    char wifi_ssid[WIFI_SIZE];
-    char wifi_pass[WIFI_SIZE];
+        // WiFi
+        char wifi_ssid[WIFI_SIZE];
+        char wifi_pass[WIFI_SIZE];
 
-    // MQTT
-    char mqtt_ip[MQTT_SIZE];
-    char mqtt_user[MQTT_SIZE];
-    char mqtt_pass[MQTT_SIZE];
-    uint16_t mqtt_port;
-};
+        // MQTT
+        char mqtt_ip[MQTT_SIZE];
+        char mqtt_user[MQTT_SIZE];
+        char mqtt_pass[MQTT_SIZE];
+        uint16_t mqtt_port;
+    };
 
-extern Config config;
-extern Prefs prefs;
-extern State state;
+    extern Config config;
+    extern Prefs prefs;
+    extern State state;
 
-void reboot();
-void factory_reset();
+    void reboot();
+    void reset();
 
-void save_state();
+    void saveState();
 
-void save_settings();
-void load_settings();
-
-void config_setup();
+    void save();
+    void load();
+    void setup();
+}
 
 #endif // SETTINGS_H

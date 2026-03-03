@@ -5,21 +5,25 @@
 
 void defaults() {
 
+    auto& c = Settings::config;
+    auto& p = Settings::prefs;
+    auto& s = Settings::state;
+
     // ---------     Identification     ---------
 
-    strlcpy(config.device_id, DEF_DEVICE_ID, sizeof(config.device_id));
-    strlcpy(config.room, DEF_ROOM, sizeof(config.room));
-    strlcpy(config.name, DEF_NAME, sizeof(config.name));
+    strlcpy(c.device_id, DEF_DEVICE_ID, sizeof(c.device_id));
+    strlcpy(c.room, DEF_ROOM, sizeof(c.room));
+    strlcpy(c.name, DEF_NAME, sizeof(c.name));
 
     // ------- WiFi / MQTT Credentials  ---------
 
-    strlcpy(config.wifi_ssid, DEF_WIFI_SSID, sizeof(config.wifi_ssid));
-    strlcpy(config.wifi_pass, DEF_WIFI_PASS, sizeof(config.wifi_pass));
+    strlcpy(c.wifi_ssid, DEF_WIFI_SSID, sizeof(c.wifi_ssid));
+    strlcpy(c.wifi_pass, DEF_WIFI_PASS, sizeof(c.wifi_pass));
 
-    strlcpy(config.mqtt_ip, DEF_MQTT_IP, sizeof(config.mqtt_ip));
-    strlcpy(config.mqtt_user, DEF_MQTT_USER, sizeof(config.mqtt_user));
-    strlcpy(config.mqtt_pass, DEF_MQTT_PASS, sizeof(config.mqtt_pass));
-    config.mqtt_port = DEF_MQTT_PORT;
+    strlcpy(c.mqtt_ip, DEF_MQTT_IP, sizeof(c.mqtt_ip));
+    strlcpy(c.mqtt_user, DEF_MQTT_USER, sizeof(c.mqtt_user));
+    strlcpy(c.mqtt_pass, DEF_MQTT_PASS, sizeof(c.mqtt_pass));
+    c.mqtt_port = DEF_MQTT_PORT;
 
     /* BLIND DEFAULT SETTINGS */
 
@@ -27,32 +31,32 @@ void defaults() {
 
     // ---------     Preferences        ---------
 
-    prefs.up_time   = DEF_UP_TIME;
-    prefs.down_time = DEF_DOWN_TIME;
+    p.up_time   = DEF_UP_TIME;
+    p.down_time = DEF_DOWN_TIME;
 
-    prefs.mid_led_time    = DEF_STOP_LED_TIME;
-    prefs.motor_safe_time = DEF_MOTOR_SAFE_TIME;
+    p.mid_led_time    = DEF_STOP_LED_TIME;
+    p.motor_safe_time = DEF_MOTOR_SAFE_TIME;
 
-    prefs.short_pulse = DEF_SHORT_PULSE;
-    prefs.long_pulse  = DEF_LONG_PULSE;
+    p.short_pulse = DEF_SHORT_PULSE;
+    p.long_pulse  = DEF_LONG_PULSE;
 
-    prefs.down_position = DEF_DOWN_POSITION;
+    p.down_position = DEF_DOWN_POSITION;
 
     // ---------       States           ---------
 
-    state.current_position = DEF_CURRENT_POSITION;
-    state.next_position    = DEF_NEXT_POSITION;
+    s.current_position = DEF_CURRENT_POSITION;
+    s.next_position    = DEF_NEXT_POSITION;
 
-    state.active_relay = DEF_ACTIVE_RELAY;
-    state.active_led   = DEF_ACTIVE_LED;
+    s.active_relay = DEF_ACTIVE_RELAY;
+    s.active_led   = DEF_ACTIVE_LED;
 
-    state.pending_relay = DEF_PENDING_RELAY;
-    state.pending_led   = DEF_PENDING_LED;
+    s.pending_relay = DEF_PENDING_RELAY;
+    s.pending_led   = DEF_PENDING_LED;
 
-    state.is_moving     = DEF_IS_MOVING;
-    state.is_waiting    = DEF_IS_WAITING;
-    state.is_blinking   = DEF_IS_BLINKING;
-    state.pause_control = DEF_PAUSE_CONTROL;
+    s.is_moving     = DEF_IS_MOVING;
+    s.is_waiting    = DEF_IS_WAITING;
+    s.is_blinking   = DEF_IS_BLINKING;
+    s.pause_control = DEF_PAUSE_CONTROL;
 
     /* LIGHT DEFAULT SETTINGS */
 

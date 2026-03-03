@@ -1,16 +1,20 @@
 #include "network.h"
 #include "buttons.h"
 #include "actions.h"
-#include "config.h"
+#include "settings.h"
+
+#if defined(DEVICE_HARDWARE_ESP8266)
+    #include "hardware/esp8266/hardware.h"
+#elif defined(DEVICE_HARDWARE_BK7231N)
+    #include "hardware/bk7231n/hardware.h"
+#endif
 
 void setup() {
 
-    config_setup();
-    network_setup();
+    Settings::setup();
+    Hardware::setup();
 
-    buttonTop.setup();
-    buttonMid.setup();
-    buttonBottom.setup();
+    network_setup();
 }
 
 void loop() {

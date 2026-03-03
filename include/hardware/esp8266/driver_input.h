@@ -1,49 +1,43 @@
 #include <Arduino.h>
 
-template <uint8_t _pin, uint8_t _activeLevel = LOW, uint32_t _debounceMs = 50>
+template <uint8_t _pin, uint16_t _maxTime>
 
 class InputPin {
 
   private:
-    static inline bool _lastStableState;
-    static inline bool _lastRawState;
-    static inline uint32_t _lastDebounceTime;
-    static inline uint32_t _pressStartTime;
+    static inline bool _wasPressed = false;
+    static inline bool _waitingRelease = false;
+    static inline uint16_t _startTime = 0;
 
   public:
-    static void setup() {
-        if (_activeLevel == LOW) {
-            pinMode(_pin, INPUT_PULLUP);
-        } else {
-            pinMode(_pin, INPUT);
-        }
-        _lastStableState  = false;
-        _lastRawState     = _rawRead();
-        _lastDebounceTime = 0;
-    }
+    static void setup() { pinMode(_pin, INPUT_PULLUP);}
+    static inline bool isPressed() {return digitalRead(_pin) == LOW;}
 
-    static bool isPressed() {
-        bool currentRaw = (digitalRead(_pin) == _activeLevel);
-        uint32_t now    = millis();
+    static uint16_t getDuration() {
 
-        if (currentRaw != _lastRawState) {
-            _lastDebounceTime = now;
-        }
+        uint16_t now = (uint16_t) (millis() / 10);
 
-        if ((now - _lastDebounceTime) > _debounceMs) {
-            if (currentRaw != _lastStableState) {
-                _lastStableState = currentRaw;
-                if (_lastStableState)
-                    _pressStartTime = now;
+        if (isPressed() && !_waitingRelease) {
+
+            if (_wasPressed) {
+                uint16_t duration = now - _startTime;
+                if (duration > _maxTime) _waitingRelease = true;
+                return duration;
+
+            } else { // Start timer
+                _startTime = now;
+                _wasPressed = true;
+                _waitingRelease = false;
             }
-        }
-        _lastRawState = currentRaw;
-        return _lastStableState;
-    }
 
-    static uint32_t getPressDuration() {
-        if (!isPressed())
-            return 0;
-        return millis() - _pressStartTime;
+        } else if (!isPressed() && _wasPressed){
+            uint16_t duration = now - _startTime;
+            _startTime = 0;
+            _wasPressed = false;
+            _waitingRelease = false;
+            return duration;
+        }
+
+        return 0;
     }
 };
