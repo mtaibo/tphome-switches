@@ -24,16 +24,11 @@ struct __attribute__((__packed__)) State {
     uint16_t next_position;
 
     uint8_t active_relay;
-    uint8_t active_led;
-
     uint8_t pending_relay;
-    uint8_t pending_led;
 
     // States
     bool is_moving;
     bool is_waiting;
-    bool is_blinking;
-    bool pause_control;
 };
 
 #endif // SETTINGS_BLIND_H

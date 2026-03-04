@@ -33,10 +33,10 @@ namespace Hardware { // Hardware for ESP8266
     // --- LED CONTROL ---
     static void setState(uint8_t pin, bool state) {
         switch (pin) {
-            case LED_GREEN: state ? LedGreen::on : LedGreen::off;
-            case LED_BTM: state ? LedBtm::on : LedBtm::off;
-            case LED_MID: state ? LedMid::on : LedMid::off;
-            case LED_TOP: state ? LedTop::on : LedTop::off;
+            case LED_GREEN: state ? LedGreen::on() : LedGreen::off();
+            case LED_BTM: state ? LedBtm::on() : LedBtm::off();
+            case LED_MID: state ? LedMid::on() : LedMid::off();
+            case LED_TOP: state ? LedTop::on() : LedTop::off();
         }
     }
 

@@ -48,15 +48,11 @@ void defaults() {
     s.next_position    = DEF_NEXT_POSITION;
 
     s.active_relay = DEF_ACTIVE_RELAY;
-    s.active_led   = DEF_ACTIVE_LED;
 
     s.pending_relay = DEF_PENDING_RELAY;
-    s.pending_led   = DEF_PENDING_LED;
 
     s.is_moving     = DEF_IS_MOVING;
     s.is_waiting    = DEF_IS_WAITING;
-    s.is_blinking   = DEF_IS_BLINKING;
-    s.pause_control = DEF_PAUSE_CONTROL;
 
     /* LIGHT DEFAULT SETTINGS */
 

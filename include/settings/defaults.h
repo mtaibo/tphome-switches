@@ -1,6 +1,8 @@
 #ifndef DEFAULTS_H
 #define DEFAULTS_H
 
+#include <stdint.h>
+
 /* Char size definitions */
 #define IDENTITY_SIZE 16
 #define WIFI_SIZE     32
