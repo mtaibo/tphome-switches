@@ -10,7 +10,7 @@
 namespace Leds {
 
     /* Enums to simplify code */
-    enum Mode { OFF, ON, BLINK };
+    enum Mode { OFF, ON, BLINK, BLUE = OFF, RED = ON };
     enum Speed { SLOW = 100, MEDIUM = 50, FAST = 25 }; // 1s, 0.5s, 0.25s
 
     /* Struct that contains every relevant value of each led */
@@ -24,7 +24,9 @@ namespace Leds {
         uint16_t offTime;
     };
 
-    inline LedState _states[4]; 
+    inline LedState _states[4] = {
+        {NO_PIN}, {NO_PIN}, {NO_PIN}, {NO_PIN}  // Initialize _states with no pins
+    }; 
 
     inline void set(uint8_t pin, Mode mode, Speed speed = MEDIUM, uint16_t blinks = 0, uint16_t duration = 0) {
         for (auto &state : _states) {
