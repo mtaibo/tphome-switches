@@ -5,6 +5,7 @@
 
 void defaults() {
 
+    /* Shortcuts to write less */
     auto& c = Settings::config;
     auto& p = Settings::prefs;
     auto& s = Settings::state;

@@ -1,13 +1,21 @@
-#ifndef ACTIONS
-#define ACTIONS
+#ifndef ACTIONS_H
+#define ACTIONS_H
 
-enum Direction { UP = 1, DOWN = 0, STOP = -1 };
+#include "buttons.h"
+#include "position.h"
 
-void blink(int pin, int control);
-void set_position(float next_position);
+namespace Actions {
+    inline void check() {
+        
+        if (auto action = Buttons::getAction(BTN_TOP)) {
+            if (action == Buttons::SHORT) Relays::moveUp();
+            else                          Relays::fullUp();
+        }
 
-void handle_button_action(int pin, unsigned long duration);
-void move_blind(Direction direction);
-void update_actions();
+        if (auto action = Buttons::getAction(BTN_MID)) {
+            if (action == Buttons::SHORT) Relays::stop();
+        }
+    }
+}
 
 #endif

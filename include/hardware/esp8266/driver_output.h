@@ -7,6 +7,5 @@ class OutputPin {
     static void setup() {pinMode(_pin, OUTPUT); off();}
     static inline void on() {digitalWrite(_pin, HIGH);}
     static inline void off() {digitalWrite(_pin, LOW);}
-    static void toggle() {digitalWrite(_pin, !digitalRead(_pin));}
     static inline void deactivate() {pinMode(_pin, INPUT);}
 };

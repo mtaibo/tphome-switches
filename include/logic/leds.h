@@ -24,10 +24,12 @@ namespace Leds {
         uint16_t offTime;
     };
 
+    /* Array that stores every active led */
     inline LedState _states[4] = {
         {NO_PIN}, {NO_PIN}, {NO_PIN}, {NO_PIN}  // Initialize _states with no pins
     }; 
 
+    /* Function that provides the indicated led the indicated state */
     inline void set(uint8_t pin, Mode mode, Speed speed = MEDIUM, uint16_t blinks = 0, uint16_t duration = 0) {
         for (auto &state : _states) {
 
@@ -57,6 +59,7 @@ namespace Leds {
         }
     }
 
+    /* Function that controls every led state */
     inline void update() {
         uint16_t now = (uint16_t)(millis() / 10); // now: Variable to prevent calculating millis() each time
         for (auto &state : _states) { // Loop to update every active led
@@ -77,6 +80,7 @@ namespace Leds {
             if (now - state.lastTime >= state.interval) {
 
                 state.lastTime = now;
+
                 state.state = !state.state;
                 Hardware::setState(state.pin, state.state);
 
