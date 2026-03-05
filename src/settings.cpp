@@ -1,5 +1,6 @@
 #include "settings.h"
 #include "defaults.h"
+#include "leds.h"
 
 #include <Preferences.h> // Lib to save information on flash memory
 
@@ -11,7 +12,12 @@ namespace Settings {
 
     Preferences storage;
 
-    void reboot() {delay(500); ESP.restart();}
+    void reboot() {
+        Leds::set(LED_TOP, Leds::BLINK, Leds::SLOW, 3);
+        Leds::set(LED_MID, Leds::BLINK, Leds::SLOW, 3);
+        Leds::set(LED_BTM, Leds::BLINK, Leds::SLOW, 3);
+        ESP.restart();
+    }
 
     // Clear every division on the storage to set
     // default settings again
@@ -20,6 +26,33 @@ namespace Settings {
         storage.clear();
         storage.end();
         reboot();
+    }
+
+    void defaults() {
+
+        /* --------------   Identification  -------------- */
+        strlcpy(config.device_id, Defaults::ID, IDENTITY_SIZE);
+        strlcpy(config.room, Defaults::ROOM, IDENTITY_SIZE);
+        strlcpy(config.name, Defaults::NAME, IDENTITY_SIZE);
+
+        /* -----------------   Network   ----------------- */
+        strlcpy(config.wifi_ssid, WIFI_SSID, WIFI_SIZE);
+        strlcpy(config.wifi_pass, WIFI_PASS, WIFI_SIZE);
+        strlcpy(config.mqtt_ip, MQTT_IP, MQTT_SIZE);
+        strlcpy(config.mqtt_user, MQTT_USER, MQTT_SIZE);
+        strlcpy(config.mqtt_pass, MQTT_PASS, MQTT_SIZE);
+        config.mqtt_port = MQTT_PORT;
+
+        /* --------  Preferences & Initial State  -------- */
+        #if defined(DEVICE_TYPE_BLIND)
+            prefs.up_time = Defaults::UP_TIME;
+            prefs.down_time = Defaults::DOWN_TIME;
+            prefs.down_position = Defaults::DOWN_POSITION;
+            state.current_position = Defaults::START_POSITION;
+            state.next_position = Defaults::START_POSITION;
+            state.is_moving = Defaults::IS_MOVING;
+            state.is_waiting = Defaults::IS_WAITING;
+        #endif
     }
 
     // Save only the state settings struct, this function will be called just when
@@ -71,7 +104,7 @@ namespace Settings {
 
         // Check if every block on memory exists and corresponds to its real memory size
         if (r1 != sizeof(Config) || r2 != sizeof(Prefs) || r3 != sizeof(State)) {
-            Defaults::apply(); save();
+            defaults(); save();
         }
     }
 

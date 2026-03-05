@@ -2,6 +2,7 @@
 #define HARDWARE_H
 
 #include "defaults.h"
+#include "settings.h"
 #include "hardware/esp8266/pinout.h"
 #include "hardware/esp8266/driver_input.h"
 #include "hardware/esp8266/driver_output.h"
@@ -9,11 +10,9 @@
 namespace Hardware { // Hardware for ESP8266
 
     // --- BUTTONS ---
-    static constexpr uint16_t MAX_TIME = DEF_LONG_PULSE;
-
-    using BtnBtm = InputPin<BTN_BTM, MAX_TIME>;
-    using BtnMid = InputPin<BTN_MID, MAX_TIME>;
-    using BtnTop = InputPin<BTN_TOP, MAX_TIME>;
+    using BtnBtm = InputPin<BTN_BTM, Defaults::LONG_PULSE>;
+    using BtnMid = InputPin<BTN_MID, Defaults::LONG_PULSE>;
+    using BtnTop = InputPin<BTN_TOP, Defaults::LONG_PULSE>;
 
     // --- LEDS ---
     using LedConfig = OutputPin<LED_CONFIG>;

@@ -12,7 +12,7 @@
 namespace Buttons {
 
     /* Enums to simplify code */
-    enum Action { NONE, SHORT, LONG };
+    enum Action { NONE, SHORT, MEDIUM, LONG };
 
     /* Struct to store the result of each button check */
     struct ButtonState {
@@ -27,7 +27,8 @@ namespace Buttons {
 
     /* Private function to translate duration to Action */
     inline Action _translate(uint16_t duration) {
-        if (duration >= DEF_LONG_PULSE) return LONG;
+        if (duration >= Defaults::LONG_PULSE) return LONG;
+        else if (duration >= Defaults::SHORT_PULSE) return MEDIUM;
         else if (duration >= 5) return SHORT;
         else return NONE;
     }

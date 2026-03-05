@@ -39,6 +39,7 @@ namespace Settings {
 
     void reboot();
     void reset();
+    void defaults();
 
     void saveState();
 
