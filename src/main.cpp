@@ -1,5 +1,5 @@
-#include "actions.h"
 #include "settings.h"
+#include "actions.h"
 
 void setup() {
     Settings::setup();
@@ -7,8 +7,11 @@ void setup() {
 }
 
 void loop() {
-    Leds::update();
-    Buttons::update();
 
     Actions::check();
+
+    Leds::update();
+    Relays:: update();
+    Buttons::update();
+    Position::update();
 }

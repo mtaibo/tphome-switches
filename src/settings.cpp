@@ -48,11 +48,13 @@ namespace Settings {
             prefs.up_time = Defaults::UP_TIME;
             prefs.down_time = Defaults::DOWN_TIME;
             prefs.down_position = Defaults::DOWN_POSITION;
+            prefs.inverted_relays = Defaults::INVERTED_RELAYS;
             state.current_position = Defaults::START_POSITION;
-            state.next_position = Defaults::START_POSITION;
+            state.current_position = Defaults::START_POSITION;
             state.is_moving = Defaults::IS_MOVING;
-            state.is_waiting = Defaults::IS_WAITING;
         #endif
+        
+        save();
     }
 
     // Save only the state settings struct, this function will be called just when
@@ -103,10 +105,8 @@ namespace Settings {
         storage.end();
 
         // Check if every block on memory exists and corresponds to its real memory size
-        if (r1 != sizeof(Config) || r2 != sizeof(Prefs) || r3 != sizeof(State)) {
-            defaults(); save();
-        }
+        if (r1 != sizeof(Config) || r2 != sizeof(Prefs) || r3 != sizeof(State)) defaults();
     }
 
-    void setup() {load();}
+    void setup() {defaults();}
 }
