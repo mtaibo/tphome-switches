@@ -5,7 +5,7 @@
 
 #if defined(DEVICE_TYPE_BLIND)
     #include "blinds.h"
-#elif defined(DEVICE_TYPE_LIGH)
+#elif defined(DEVICE_TYPE_LIGHT)
     #include "lights.h"
 #endif
 

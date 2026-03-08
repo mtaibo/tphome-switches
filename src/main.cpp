@@ -3,7 +3,7 @@
 
 #if defined(DEVICE_TYPE_BLIND)
     #include "blinds.h"
-#elif defined(DEVICE_TYPE_LIGH)
+#elif defined(DEVICE_TYPE_LIGHT)
     #include "lights.h"
 #endif
 
@@ -21,7 +21,7 @@ void loop() {
     Leds::update();
     Buttons::update();
 
-    /*  */
+    /* Update device functions */
     #if defined(DEVICE_TYPE_BLIND)
         Blinds::update();
     #elif defined(DEVICE_TYPE_LIGH)
