@@ -7,7 +7,7 @@
 namespace Network {
 
     void inline setup() {
-        Wifi:setup();
+        Wifi::setup();
     }
 
     void inline update() {
