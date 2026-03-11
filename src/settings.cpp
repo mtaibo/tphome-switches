@@ -32,8 +32,6 @@ namespace Settings {
 
         /* --------------   Identification  -------------- */
         strlcpy(config.deviceID, Defaults::ID, IDENTITY_SIZE);
-        strlcpy(config.room, Defaults::ROOM, IDENTITY_SIZE);
-        strlcpy(config.name, Defaults::NAME, IDENTITY_SIZE);
 
         /* -----------------   Network   ----------------- */
         strlcpy(config.wifiSSID, WIFI_SSID, WIFI_SIZE);

@@ -12,8 +12,6 @@ namespace Settings {
 
         // Identity
         char deviceID[IDENTITY_SIZE];
-        char room[IDENTITY_SIZE];
-        char name[IDENTITY_SIZE];
 
         // WiFi
         char wifiSSID[WIFI_SIZE];

@@ -17,9 +17,7 @@
 namespace Defaults {
 
     /* --- Identification --- */
-    static constexpr char ID []   = "B364859";
-    static constexpr char ROOM [] = "bedroom";
-    static constexpr char NAME [] = "blind";
+    static constexpr char ID []   = "";
 
     /* --- Timings & Preferences --- */
     static constexpr uint16_t UP_TIME          = 1000; // 10.00s
