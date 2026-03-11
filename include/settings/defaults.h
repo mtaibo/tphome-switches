@@ -15,7 +15,7 @@ namespace Sizes {
 namespace Defaults {
 
     /* --- Identification --- */
-    static constexpr char ID []   = "";
+    static constexpr char ID [] = ""; // ID will take its default value on settings.cpp via device MAC
 
     /* --- Timings & Preferences --- */
     static constexpr uint16_t UP_TIME          = 1000; // 10.00s

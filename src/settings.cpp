@@ -1,6 +1,7 @@
 #include "settings.h"
 #include "defaults.h"
 #include "leds.h"
+#include "wifi.h"
 
 #include <Preferences.h> // Lib to save information on flash memory
 
@@ -31,7 +32,9 @@ namespace Settings {
     void defaults() {
 
         /* --------------   Identification  -------------- */
-        strlcpy(config.deviceID, Defaults::ID, Sizes::ID);
+        uint8_t mac[6];
+        WiFi.macAddress(mac);
+        snprintf(config.deviceID, Sizes::ID, "%02X%02X", mac[4], mac[5]);
 
         /* -----------------   Network   ----------------- */
         strlcpy(config.wifiSSID, WIFI_SSID, Sizes::WIFI);
