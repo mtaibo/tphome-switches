@@ -2,6 +2,7 @@
 #define NETWORK_H
 
 #include "settings.h"
+#include "commands.h"
 #include "wifi.h"
 #include "mqtt.h"
 
@@ -12,6 +13,7 @@ namespace Network {
     void inline setup() {
         Wifi::setup();
         Mqtt::setup();
+        Mqtt::_client.setCallback(Commands::callback);
     }
 
     void inline update() {

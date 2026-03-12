@@ -4,7 +4,7 @@
 #include <PubSubClient.h>
 
 #include "settings.h"
-#include "commands.h"
+#include "wifi.h"
 
 #define ATTEMPT_INTERVAL 5000
 
@@ -60,7 +60,6 @@ namespace Mqtt {
         /* Setup the mqtt server with its credentials, max buffer and callback function */
         _client.setServer(Settings::config.mqttIP, Settings::config.mqttPort);
         _client.setBufferSize(sizeof(Settings::Prefs) + 64); 
-        _client.setCallback(Commands::callback);
     }
 
     void reconnect() {

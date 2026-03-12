@@ -21,14 +21,14 @@ namespace Wifi {
         bool ledOn = false;
     };
 
-    static State _state;
+    inline static State _state;
 
     /* Public function for other modules to check if wifi is connected */
-    bool isConnected() {
+    inline bool isConnected() {
         return _state.isConnected;
     }
 
-    void setup() {
+    inline void setup() {
 
         /* Configure the initial settings of the wifi connection */
         Hardware::Wifi::setup(Settings::config.deviceID);
@@ -41,7 +41,7 @@ namespace Wifi {
         _state.attempts = 1;
     }
 
-    void reconnect() {
+    inline void reconnect() {
 
         /* Restart default values on connection state */
         _state.lastTime = 0;
@@ -55,7 +55,7 @@ namespace Wifi {
         setup();
     }
 
-    void update() {
+    inline void update() {
 
         uint32_t now = (uint32_t) millis();
 
