@@ -13,16 +13,22 @@ namespace Network {
     void inline setup() {
         Wifi::setup();
         Mqtt::setup();
-        Mqtt::_client.setCallback(Commands::callback);
-    }
+   }
 
     void inline update() {
         Wifi::update();
         if (Wifi::isConnected()) {
-            if (!_wifiWasConnected) Mqtt::reconnect();
-            _wifiWasConnected = true;
+            if (!_wifiWasConnected) {
+                _wifiWasConnected = true;
+                Mqtt::reconnect();
+            }
             Mqtt::update();
-        } else _wifiWasConnected = false;
+        } else {
+            if (_wifiWasConnected) {
+                _wifiWasConnected = false;
+                Mqtt::reconnect();
+            }
+        }
     }
 }
 
