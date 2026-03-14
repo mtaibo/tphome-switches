@@ -12,6 +12,7 @@ namespace Commands {
             UP   = 0xC0,
             DOWN = 0xC1,
             STOP = 0xC2,
+            PING = 0xC3,
         };
 
     #elif defined(DEVICE_TYPE_LIGHT)
@@ -23,6 +24,14 @@ namespace Commands {
         uint8_t zone;
         uint8_t device;
     };
+
+    /* Get, if the device is connected, a 1 */
+    void publishOnline() {
+        uint8_t payload = 1;
+        Mqtt::_client.publish(Mqtt::topics.state,
+                            reinterpret_cast<const uint8_t*>(&payload),
+                            sizeof(payload));
+    }
 
     /* Report blind state while moving */
     void publishState(uint8_t position, uint8_t state) {
@@ -47,6 +56,7 @@ namespace Commands {
                 case Cmd::UP:   Blinds::Position::set(10000);                        break;
                 case Cmd::DOWN: Blinds::Position::set(Settings::prefs.downPosition); break;
                 case Cmd::STOP: Blinds::Relays::stop();                              break;
+                case Cmd::PING: publishOnline();                                     break;
                 default: break;
             }
 
@@ -67,7 +77,7 @@ namespace Commands {
             /* Build new deviceID */
             const auto* id = reinterpret_cast<const DeviceID*>(payload);
             snprintf(Settings::config.deviceID, 6, "%c%02d%02d",
-                     id->type, id->zone, id->device);
+                     id->type, id->zone % 100, id->device % 100);
 
             /* Reboot with new deviceID to build new topics */
             Settings::save();
