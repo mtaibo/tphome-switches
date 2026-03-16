@@ -14,9 +14,8 @@ namespace Settings {
     Preferences storage;
 
     void reboot() {
-        Leds::set(Pins::LED_TOP, Leds::BLINK, Leds::SLOW, 3);
-        Leds::set(Pins::LED_MID, Leds::BLINK, Leds::SLOW, 3);
-        Leds::set(Pins::LED_BTM, Leds::BLINK, Leds::SLOW, 3);
+        Leds::off();
+        delay(3000);
         ESP.restart();
     }
 
