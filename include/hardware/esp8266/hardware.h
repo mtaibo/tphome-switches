@@ -40,7 +40,7 @@ namespace Hardware { // Hardware for ESP8266
     }
 
     // --- GLOBAL SETUP ---
-    static void setup() {
+    static inline void setup() {
 
         LedGreen::setup();
         LedBtm::setup();
