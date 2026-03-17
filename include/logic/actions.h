@@ -24,28 +24,20 @@ namespace Actions {
                 if (auto action = Buttons::getAction(Pins::BTN_TOP)) {
                     if (action == Buttons::SHORT) {
                         if(!Network::isConnected()) Network::reconnect();
-                        else {
-                            Mode::set(Mode::Value::NORMAL);
-                            Leds::set(Pins::BTN_MID, Leds::OFF);
-                            Leds::set(Pins::BTN_BTM, Leds::OFF);
-                        }
+                        else Mode::set(Mode::Value::NORMAL);
                     }
-                    else if (action == Buttons::MEDIUM) {} // OTA new firmware
-                    else if (action == Buttons::LONG) {
-                        Mode::set(Mode::Value::NORMAL);
-                        Leds::set(Pins::BTN_MID, Leds::OFF);
-                        Leds::set(Pins::BTN_BTM, Leds::OFF);
-                    }
+                    else if (action == Buttons::MEDIUM) {}
+                    else if (action == Buttons::LONG) {}
                 }
 
                 else if (auto action = Buttons::getAction(Pins::BTN_MID)) {
-                    if (action == Buttons::SHORT) {Wifi::reconnect();}
+                    if (action == Buttons::SHORT) {} // OTA new firmware
                     else if (action == Buttons::MEDIUM) {}
-                    else if (action == Buttons::LONG) {} // Access point
+                    else if (action == Buttons::LONG) {}
                 }
 
                 else if (auto action = Buttons::getAction(Pins::BTN_BTM)) {
-                    if (action == Buttons::SHORT) {Mqtt::reconnect();}
+                    if (action == Buttons::SHORT) {} // Access point
                     else if (action == Buttons::MEDIUM) {}
                     else if (action == Buttons::LONG) {}
                 }
@@ -54,13 +46,16 @@ namespace Actions {
 
                 if (auto action = Buttons::getAction(Pins::BTN_TOP)) {
                     if (action == Buttons::SHORT) Blinds::Position::set(10000);
-                    else if (action == Buttons::MEDIUM) Blinds::Position::set(Settings::prefs.downPosition);
+                    else if (action == Buttons::MEDIUM) {
+                        if (Settings::state.currentPosition < Settings::prefs.downPosition) 
+                            Blinds::Position::set(Settings::prefs.downPosition);
+                    }
                     else if (action == Buttons::LONG) Mode::set(Mode::Value::CONNECTION);
                 }
 
                 else if (auto action = Buttons::getAction(Pins::BTN_MID)) {
                     if (action == Buttons::SHORT) Blinds::Relays::stop();
-                    else if (action == Buttons::MEDIUM) Blinds::Position::set(Settings::state.currentPosition);
+                    else if (action == Buttons::MEDIUM) {}
                     else if (action == Buttons::LONG) {}
                 }
 
