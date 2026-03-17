@@ -7,6 +7,7 @@
 #include "wifi.h"
 
 #define ATTEMPT_INTERVAL 5000
+#define MAX_ATTEMPTS 5
 
 namespace Mqtt {
 
@@ -43,6 +44,10 @@ namespace Mqtt {
 
     bool isConnected() {
         return _state.isConnected;
+    }
+        
+    inline bool isOnTimeout() {
+        return (!_state.isConnected) && (_state.attempts >= MAX_ATTEMPTS);
     }
 
     void setup() {
@@ -106,7 +111,7 @@ namespace Mqtt {
             /* First connection attempt: wait 3s to stabilize wifi connection */
             if (_state.lastTime == 0) {_state.lastTime = now + 3000; return;}
 
-            if (_state.attempts < 5) { // Not more than 5 attempts per manual reconnection
+            if (_state.attempts < MAX_ATTEMPTS) { // Not more than 5 attempts per manual reconnection
 
                 /* Check interval between attempts */
                 if (now - _state.lastTime > ATTEMPT_INTERVAL) {
@@ -129,7 +134,7 @@ namespace Mqtt {
         else { // Client is connected but state.isConnected is false === first connection
             if (_state.ledOn) {Leds::set(Pins::LED_GREEN, Leds::OFF); _state.ledOn = false;}
             _state.isConnected = true;
-            _state.attempts = 5;
+            _state.attempts = MAX_ATTEMPTS;
             _state.lastTime = now;
 
             if (strlen(Settings::config.deviceID) == 4) _client.subscribe(topics.def);

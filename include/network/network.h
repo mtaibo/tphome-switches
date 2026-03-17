@@ -19,6 +19,13 @@ namespace Network {
         Wifi::update();
         if (Wifi::isConnected()) Mqtt::update();
 
+        // Leds on normal mode
+        if (Mode::is(Mode::Value::NORMAL)) {
+            if (Wifi::isOnTimeout() || Mqtt::isOnTimeout()) Leds::set(Pins::LED_GREEN, Leds::ON);
+            else Leds::set(Pins::LED_GREEN, Leds::OFF);
+        }
+
+        // Leds on connection mode
         if (Mode::is(Mode::Value::CONNECTION)) {
             if (Wifi::isConnected()) Leds::set(Pins::LED_MID, Leds::ON);
             else Leds::set(Pins::LED_MID, Leds::OFF);
