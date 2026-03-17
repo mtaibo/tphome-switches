@@ -22,7 +22,14 @@ namespace Actions {
             if (Mode::is(Mode::Value::CONNECTION)) {
 
                 if (auto action = Buttons::getAction(Pins::BTN_TOP)) {
-                    if (action == Buttons::SHORT) {Network::reconnect();}
+                    if (action == Buttons::SHORT) {
+                        if(!Network::isConnected()) Network::reconnect();
+                        else {
+                            Mode::set(Mode::Value::NORMAL);
+                            Leds::set(Pins::BTN_MID, Leds::OFF);
+                            Leds::set(Pins::BTN_BTM, Leds::OFF);
+                        }
+                    }
                     else if (action == Buttons::MEDIUM) {} // OTA new firmware
                     else if (action == Buttons::LONG) {
                         Mode::set(Mode::Value::NORMAL);

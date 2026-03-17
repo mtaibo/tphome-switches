@@ -13,7 +13,11 @@ namespace Network {
         Wifi::setup();
         Mqtt::setup();
         Mqtt::setCallback(Commands::callback);
-   }
+    }
+
+    bool inline isConnected() {
+        return (Wifi::isConnected() && Mqtt::isConnected());
+    }
 
     void inline update() {
         Wifi::update();
