@@ -11,6 +11,7 @@
 #endif
 
 #define ATTEMPT_INTERVAL 5000
+#define MAX_ATTEMPTS 3
 
 namespace Wifi {
 
@@ -26,6 +27,10 @@ namespace Wifi {
     /* Public function for other modules to check if wifi is connected */
     inline bool isConnected() {
         return _state.isConnected;
+    }
+    
+    inline bool isOnTimeout() {
+        return (!_state.isConnected) && (_state.attempts >= MAX_ATTEMPTS);
     }
 
     inline void setup() {
@@ -69,7 +74,7 @@ namespace Wifi {
             if (!Hardware::Wifi::isConnected()) {
                 _state.isConnected = false;
                 _state.lastTime = now;
-                _state.attempts = 3;
+                _state.attempts = MAX_ATTEMPTS;
             } 
 
             return;
@@ -78,7 +83,7 @@ namespace Wifi {
         /* While device is disconnected */
         if (!Hardware::Wifi::isConnected()) {
 
-            if (_state.attempts < 3) { // Not more than three attempts allowed on each reconnection
+            if (_state.attempts < MAX_ATTEMPTS) { // Not more than 3 attempts allowed on each reconnection
 
                 /* Check interval between attempts */
                 if (now - _state.lastTime > ATTEMPT_INTERVAL) {
