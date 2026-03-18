@@ -23,7 +23,7 @@ namespace Defaults {
     static constexpr uint16_t DOWN_POSITION    = 2000; // 20.00%
     static constexpr bool INVERTED_RELAYS      = false;
 
-    static constexpr uint16_t MOTOR_SAFE_TIME  = 50;   // 0.50s
+    static constexpr uint16_t MOTOR_SAFE_TIME  = 100;  // 1.00s
     static constexpr uint16_t LONG_PULSE       = 500;  // 5.00s
     static constexpr uint16_t SHORT_PULSE      = 200;  // 2.00s
 
