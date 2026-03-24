@@ -31,31 +31,31 @@ namespace Leds {
 
     /* Function that provides the indicated led the indicated state */
     inline void set(uint8_t pin, Mode mode, Speed speed = MEDIUM, uint16_t blinks = 0, uint16_t duration = 0) {
-        for (auto &state : _states) {
 
-            if (state.pin == pin || state.pin == Pins::NO_PIN) {
-                state.pin = pin;
-                state.mode = mode;
-                state.state = (mode == ON);
-                state.interval = speed;
-                state.counter = (mode == BLINK) ? (blinks * 2) : 0; // Limpia el contador si no es blink
-                state.lastTime = (uint16_t)(millis() / 10);
-                state.offTime = (duration > 0) ? ((uint16_t)(millis() / 10) + duration) : 0;
-                
-                /* Interaction with hardware */
-                Hardware::setState(pin, state.state); return;
-            }
+        LedState* slot = nullptr; // Pointer to the slot to be modified
+
+        /* Looking for the pin slot, or an empty slot if pin not found */
+        for (auto &state : _states) {
+            if (state.pin == pin) { slot = &state; break; }
+            if (state.pin == Pins::NO_PIN && !slot) slot = &state;
         }
+
+        /* Adjust every variable of the state */
+        slot -> pin = pin;
+        slot -> mode = mode;
+        slot -> state = (mode == ON);
+        slot -> interval = speed;
+        slot -> counter = blinks * 2;
+        slot -> lastTime = (uint16_t)(millis() / 10);
+        slot -> offTime = (duration > 0) ? (uint16_t)(millis() / 10) + duration : 0;
+
+        /* Hardware interaction */
+        Hardware::setState(pin, slot->state);
     }
 
     inline void off() { // Turn every pin off
         for (auto &state : _states) {
-
-            /* Set every pin on pins array to off and clean pins array */
-            if (state.pin != Pins::NO_PIN) {
-                Hardware::setState(state.pin, false);
-                state.pin = Pins::NO_PIN;
-            }
+            if (state.pin != Pins::NO_PIN) {Hardware::setState(state.pin, false); state.mode = OFF;}
         }
     }
 
@@ -70,7 +70,7 @@ namespace Leds {
             /* Duration control */
             if (state.offTime > 0 && (int16_t)(now - state.offTime) >= 0) {
                 Hardware::setState(state.pin, false);
-                state.pin = Pins::NO_PIN; continue;
+                state.mode = OFF; continue;
             } 
 
             /* If the pin mode is not blink, skip blinking control */
@@ -89,7 +89,6 @@ namespace Leds {
                     if (state.counter == 0) {
                         state.mode = OFF;
                         Hardware::setState(state.pin, false);
-                        state.pin = Pins::NO_PIN;
                     }
                 }
             }
