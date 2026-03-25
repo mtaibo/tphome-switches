@@ -21,8 +21,10 @@ class InputPin {
 
             if (_wasPressed) {
                 uint16_t duration = now - _startTime;
-                if (duration > _maxTime) _waitingRelease = true;
-                return duration;
+                if (duration > _maxTime) {
+                    _waitingRelease = true; 
+                    return duration;
+                }
 
             } else { // Start timer
                 _startTime = now;

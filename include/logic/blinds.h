@@ -23,6 +23,7 @@ namespace Blinds {
         Direction direction = NONE;
         uint32_t startTime = 0;
         uint32_t lastTime = 0;
+        uint32_t waitingTime = 0;
         uint16_t nextPosition = Settings::state.currentPosition;
     };
         
@@ -91,18 +92,15 @@ namespace Blinds {
                     Relays::stop();
 
                     /* Start the timers if it is first waiting period */
-                    if (_motor.startTime == 0) {
-                        _motor.startTime = now;
-                        _motor.lastTime = now;
-                        break;
-                    }
+                    if (_motor.waitingTime == 0) {_motor.waitingTime = now; break;}
 
                     /* Check if safe time was enough and start movement */
-                    if ((now - _motor.startTime) >= Defaults::MOTOR_SAFE_TIME) {
+                    if ((now - _motor.waitingTime) >= Defaults::MOTOR_SAFE_TIME*10) {
 
                         _motor.state = MOVING;
                         _motor.startTime = now;
                         _motor.lastTime = now;
+                        _motor.waitingTime = now;
 
                         if (_motor.direction == UP) Relays::up();
                         else if (_motor.direction == DOWN) Relays::down();
@@ -173,13 +171,16 @@ namespace Blinds {
 
             /* Determine new motor direction and position from current and target position */
             targetPosition = ((targetPosition + 50) / 100) * 100;  // Round target_position
-            _motor.direction = (targetPosition > Settings::state.currentPosition) ? UP : DOWN;
+            Direction newDirection = (targetPosition > Settings::state.currentPosition) ? UP : DOWN;
             _motor.nextPosition = targetPosition;  // Save new next position on global state
+
+            if (newDirection == _motor.direction) return;
+            else _motor.direction = newDirection;
 
             /* Set the new state for the next update function cycle */
             if (_motor.state == IDLE) _motor.state = MOVING;
             else if (_motor.state == WAITING) _motor.state = WAITING;
-            else if (_motor.state == MOVING) _motor.state = WAITING;
+            else if (_motor.state == MOVING) {_motor.state = WAITING; _motor.waitingTime = 0;}
         }
     }
 
