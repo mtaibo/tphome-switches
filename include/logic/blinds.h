@@ -2,6 +2,7 @@
 #define BLINDS_H
 
 #include "settings.h"
+#include "commands.h"
 #include "leds.h"
 
 #if defined(DEVICE_HARDWARE_ESP8266)
@@ -24,6 +25,7 @@ namespace Blinds {
         uint32_t startTime = 0;
         uint32_t lastTime = 0;
         uint32_t waitingTime = 0;
+        uint32_t statePublishTime = 0;
         uint16_t nextPosition = Settings::state.currentPosition;
     };
         
@@ -74,6 +76,11 @@ namespace Blinds {
             Relays::stop();
             Leds::set(Pins::LED_MID, Leds::OFF);
             Leds::set(Pins::LED_MID, Leds::ON, Leds::MEDIUM, 0, 50);
+
+            Commands::publishState(
+                (uint8_t)(Settings::state.currentPosition / 100), 
+                (uint8_t)_motor.state
+            );
         }
     }
 
@@ -101,6 +108,12 @@ namespace Blinds {
                         _motor.startTime = now;
                         _motor.lastTime = now;
                         _motor.waitingTime = now;
+                        _motor.statePublishTime = now;
+
+                        Commands::publishState(
+                            (uint8_t)(Settings::state.currentPosition / 100), 
+                            (uint8_t)_motor.state
+                        );
 
                         if (_motor.direction == UP) Relays::up();
                         else if (_motor.direction == DOWN) Relays::down();
@@ -111,6 +124,15 @@ namespace Blinds {
 
                     /* Auxiliar variable */
                     uint16_t currentPosition = Settings::state.currentPosition;
+
+                    /* --- Publish new state --- */
+                    if (now - _motor.statePublishTime >= 1000) { 
+                        _motor.statePublishTime = now;
+                        Commands::publishState(
+                            (uint8_t)(currentPosition / 100), 
+                            (uint8_t)_motor.state
+                        );
+                    }
 
                     /* Init all variables and state on first movement */
                     if (_motor.startTime == 0) {

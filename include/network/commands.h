@@ -53,14 +53,14 @@ namespace Commands {
             if (cmd <= 100) {Blinds::Position::set(cmd * 100); return;}
 
             switch (static_cast<Cmd>(cmd)) {
-                case Cmd::UP:   Blinds::Position::set(10000);                        break;
+                case Cmd::UP: Blinds::Position::set(10000); break;
                 case Cmd::DOWN:
                     if (Settings::state.currentPosition > Settings::prefs.downPosition) {
                         Blinds::Position::set(Settings::prefs.downPosition);
                     } else Blinds::Position::set(0);
                     break;
-                case Cmd::STOP: Blinds::Relays::stop();                              break;
-                case Cmd::PING: ping();                                              break;
+                case Cmd::STOP: Blinds::stop(); break;
+                case Cmd::PING: ping(); break;
                 default: break;
             }
 
