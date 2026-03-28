@@ -56,7 +56,7 @@ namespace Leds {
     inline void off() { // Turn every pin off
         for (auto &state : _states) {
             if (state.pin != Pins::NO_PIN) {Hardware::setState(state.pin, false); state.mode = OFF;}
-        }
+        } Hardware::disableLight();
     }
 
     /* Function that controls every led state */
