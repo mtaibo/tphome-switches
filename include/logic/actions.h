@@ -13,6 +13,7 @@
 #include "mqtt.h"
 #include "wifi.h"
 #include "mode.h"
+#include "ap.h"
 
 namespace Actions {
     inline void check() {
@@ -31,13 +32,13 @@ namespace Actions {
                 }
 
                 else if (auto action = Buttons::getAction(Pins::BTN_MID)) {
-                    if (action == Buttons::SHORT) {} // OTA new firmware
+                    if (action == Buttons::SHORT) AP::start();
                     else if (action == Buttons::MEDIUM) {}
                     else if (action == Buttons::LONG) {}
                 }
 
                 else if (auto action = Buttons::getAction(Pins::BTN_BTM)) {
-                    if (action == Buttons::SHORT) {} // Access point
+                    if (action == Buttons::SHORT) {} // OTA new firmware
                     else if (action == Buttons::MEDIUM) {}
                     else if (action == Buttons::LONG) {}
                 }
