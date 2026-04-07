@@ -10,12 +10,24 @@ namespace Commands {
     #if defined(DEVICE_TYPE_BLIND)
 
         enum class Cmd : uint8_t {
-            UP   = 0xC0,
-            DOWN = 0xC1,
-            STOP = 0xC2,
-            PING = 0xC3,
-            STATE = 0xC4,
-            OTA = 0xC5,
+            UP    = 0xC0,
+            DOWN  = 0xC1,
+            STOP  = 0xC2,
+            PING  = 0xC3,
+            STATE = 0xC4
+        };
+
+    #elif defined(DEVICE_TYPE_LIGHT)
+    #endif
+
+    #if defined(DEVICE_TYPE_BLIND)
+
+        enum class AdminCmd : uint8_t {
+            OTA       = 0xA0, // No payload
+            REBOOT    = 0xA1, // No payload
+            RESET_MEM = 0xA2, // No payload
+            SET_POS   = 0xA3, // uint16_t (0-10000)
+            SET_PREFS = 0xA4, // sizeof(Settings::Prefs) bytes
         };
 
     #elif defined(DEVICE_TYPE_LIGHT)
@@ -39,13 +51,15 @@ namespace Commands {
     /* Report blind state while moving */
     void publishState() {
 
-        uint8_t position = (uint8_t) (Settings::state.currentPosition / 100);
-        uint8_t state = (uint8_t) Blinds::_motor.state;
+        /* Defining the State struct that is sent to mqtt client */
 
         struct __attribute__((packed)) State {
             uint8_t position;
             uint8_t state;
-        } payload {position, state};
+        } payload {
+            (uint8_t) (Settings::state.currentPosition / 100),
+            (uint8_t) Blinds::_motor.state
+        };
 
         Mqtt::_client.publish(Mqtt::topics.state,
                             reinterpret_cast<const uint8_t*>(&payload),
@@ -68,12 +82,43 @@ namespace Commands {
                 case Cmd::STOP: Blinds::stop(); break;
                 case Cmd::PING: ping(); break;
                 case Cmd::STATE: publishState(); break;
-                case Cmd::OTA: OTA::start(); break;
                 default: break;
             }
 
         #elif defined(DEVICE_TYPE_LIGHT)
         #endif
+    }
+
+    static void handleAdmin(byte* payload, unsigned int length) {
+        if (length < 1) return;
+
+        const AdminCmd cmd = static_cast<AdminCmd>(payload[0]);
+        const byte*    data = payload + 1;
+        const unsigned int dataLen = length - 1;
+
+        switch (cmd) {
+            case AdminCmd::OTA: if (dataLen == 0) OTA::start(); break;
+            case AdminCmd::REBOOT: if (dataLen == 0) Settings::reboot(); break;
+            case AdminCmd::RESET_MEM: if (dataLen == 0) Settings::reset(); break;
+
+            case AdminCmd::SET_POS:
+                if (dataLen == sizeof(uint16_t)) {
+                    uint16_t pos;
+                    memcpy(&pos, data, sizeof(uint16_t));
+                    if (pos <= 10000) {
+                        Settings::state.currentPosition = pos;
+                        Settings::save();
+                    }
+                } break;
+
+            case AdminCmd::SET_PREFS:
+                if (dataLen == sizeof(Settings::Prefs)) {
+                    memcpy(&Settings::prefs, data, sizeof(Settings::Prefs));
+                    Settings::save();
+                } break;
+
+            default: break;
+        }
     }
 
     void callback(char* topic, byte* payload, unsigned int length) {
@@ -108,9 +153,7 @@ namespace Commands {
 
         /* Admin commands on admin topic to change Prefs variables */
         else if (strcmp(topic, Mqtt::topics.admin) == 0) {
-            if (length != sizeof(Settings::Prefs)) return;
-            memcpy(&Settings::prefs, payload, sizeof(Settings::Prefs));
-            Settings::save();
+            handleAdmin(payload, length);
         }
     }
 }
