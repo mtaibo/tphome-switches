@@ -21,15 +21,12 @@ namespace Mqtt {
     struct Topics {
 
         char def[Sizes::MQTT]; // Default non-configured device topic
+        char global[Sizes::MQTT]; // Subscribe to global orders on same device type
 
         /* Device topics */
         char cmd[Sizes::MQTT];   // Subscribe to common orders
-        char admin[Sizes::MQTT]; // Subscribe to change settings
-        char state[Sizes::MQTT]; // Publish device state on each movement
-
-        /* Group topics */
-        char room[Sizes::MQTT]; // Subscribe to room orders on same device type
-        char global[Sizes::MQTT]; // Subscribe to global orders on same device type
+        char admin[Sizes::MQTT]; // Subscribe to administrate device
+        char state[Sizes::MQTT]; // Publish device state
     };
 
     static Topics topics;
@@ -38,6 +35,8 @@ namespace Mqtt {
     static WiFiClient _wifiClient;
     static PubSubClient _client(_wifiClient);
 
+    /* Function to set callback on network.h module and prevent circular include
+     * when including mqtt.h module on commands.h module. */
     void setCallback(MQTT_CALLBACK_SIGNATURE) {
         _client.setCallback(callback);
     }
@@ -55,25 +54,23 @@ namespace Mqtt {
         /* When the device is not configured, its device ID has 4 hex digits
          * and the device has to subscribe to the def topic to get its new ID */
         if (strlen(Settings::config.deviceID) == 4) {
-            snprintf(topics.def, Sizes::MQTT, "def/%.4s", Settings::config.deviceID);
+            snprintf(topics.def, Sizes::MQTT, "def/%s/a", Settings::config.deviceID);
+            snprintf(topics.state, Sizes::MQTT, "def/%s/s",  Settings::config.deviceID);
         }
 
         else { // Topics for configured devices
-
-            /* Create device own topics for commands, administration and reporting state */
-            snprintf(topics.cmd,   Sizes::MQTT, "tp/%.5s/c",  Settings::config.deviceID);
-            snprintf(topics.admin, Sizes::MQTT, "tp/%.5s/a",  Settings::config.deviceID);
-            snprintf(topics.state, Sizes::MQTT, "tp/%.5s/s",  Settings::config.deviceID);
-
-            /* Create group topics for device types and room device types commands */
-            snprintf(topics.room,   Sizes::MQTT, "tp/%.3s/c", Settings::config.deviceID);
-            snprintf(topics.global, Sizes::MQTT, "tp/%.1s/c", Settings::config.deviceID);
+            snprintf(topics.cmd,   Sizes::MQTT, "tp/%s/c",  Settings::config.deviceID);
+            snprintf(topics.admin, Sizes::MQTT, "tp/%s/a",  Settings::config.deviceID);
+            snprintf(topics.state, Sizes::MQTT, "tp/%s/s",  Settings::config.deviceID);
         }
+            
+        // Build global topic
+        snprintf(topics.global, Sizes::MQTT, "tp/a/c");
 
         /* Setup the mqtt server with its credentials, max buffer and callback function */
         _client.setServer(Settings::config.mqttIP, Settings::config.mqttPort);
         _client.setBufferSize(sizeof(Settings::Prefs) + 64); 
-        _client.setSocketTimeout(4); 
+        _client.setSocketTimeout(10); 
     }
 
     void reconnect() {
@@ -122,7 +119,17 @@ namespace Mqtt {
                         _state.ledOn = true;
                     }
 
-                    _client.connect(Settings::config.deviceID, Settings::config.mqttUser, Settings::config.mqttPass);
+                    const char offlineByte = 0xFF; // LWT byte
+
+                    _client.connect(
+                        Settings::config.deviceID, 
+                        Settings::config.mqttUser, 
+                        Settings::config.mqttPass,
+
+                        /* LWT lines */
+                        topics.state, 1, false,
+                        &offlineByte, 1
+                    );
 
                     _state.lastTime = now;
                     _state.attempts++;
@@ -141,9 +148,9 @@ namespace Mqtt {
             else {
                 _client.subscribe(topics.cmd);
                 _client.subscribe(topics.admin);
-                _client.subscribe(topics.room);
-                _client.subscribe(topics.global);
             }
+
+            _client.subscribe(topics.global);
         }
     }
 }

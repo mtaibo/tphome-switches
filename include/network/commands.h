@@ -66,6 +66,21 @@ namespace Commands {
                             sizeof(State));
     }
 
+    void publishID() {
+
+        delay(random(50, 1500)); // Random delay to prevent all devices publishing at the same time
+
+        DeviceID id;
+
+        id.type   = Settings::config.deviceID[0];
+        id.zone   = (uint8_t)atoi(Settings::config.deviceID + 1); 
+        id.device = (uint8_t)atoi(Settings::config.deviceID + 3);
+
+        Mqtt::_client.publish(Mqtt::topics.state, 
+                            (uint8_t*) &id, 
+                            sizeof(DeviceID));
+    }
+
     static void handleCmd(uint8_t cmd) {
 
         #if defined(DEVICE_TYPE_BLIND)
@@ -94,7 +109,7 @@ namespace Commands {
 
         const AdminCmd cmd = static_cast<AdminCmd>(payload[0]);
         const byte*    data = payload + 1;
-        const unsigned int dataLen = length - 1;
+        const uint8_t dataLen = length - 1;
 
         switch (cmd) {
             case AdminCmd::OTA: if (dataLen == 0) OTA::start(); break;
@@ -103,12 +118,8 @@ namespace Commands {
 
             case AdminCmd::SET_POS:
                 if (dataLen == sizeof(uint16_t)) {
-                    uint16_t pos;
-                    memcpy(&pos, data, sizeof(uint16_t));
-                    if (pos <= 10000) {
-                        Settings::state.currentPosition = pos;
-                        Settings::save();
-                    }
+                    memcpy(&Settings::state.currentPosition, data, sizeof(uint16_t));
+                    Settings::save();
                 } break;
 
             case AdminCmd::SET_PREFS:
@@ -124,6 +135,9 @@ namespace Commands {
     void callback(char* topic, byte* payload, unsigned int length) {
 
         if (length == 0) return;
+
+        /* Command for global topic */
+        if (strcmp(topic, Mqtt::topics.global) == 0) publishID();
 
         /* Command for non-configured deviceID */
         if (strlen(Settings::config.deviceID) == 4) {
@@ -142,16 +156,12 @@ namespace Commands {
             return;
         }
 
-        /* Common commands on cmd, room and global topics */
-        if (strcmp(topic, Mqtt::topics.cmd)    == 0 ||
-            strcmp(topic, Mqtt::topics.room)   == 0 ||
-            strcmp(topic, Mqtt::topics.global) == 0) {
-
-            if (length != 1) return;
+        /* Common topic commands */
+        if (strcmp(topic, Mqtt::topics.cmd) == 0) {
             handleCmd(payload[0]);
         }
 
-        /* Admin commands on admin topic to change Prefs variables */
+        /* Admin topic commands */
         else if (strcmp(topic, Mqtt::topics.admin) == 0) {
             handleAdmin(payload, length);
         }
