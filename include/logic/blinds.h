@@ -26,6 +26,7 @@ namespace Blinds {
     struct Motor {
         State state = IDLE;
         Direction direction = NONE;
+        float realPosition = (float) Settings::state.currentPosition;
         uint32_t startTime = 0;
         uint32_t lastTime = 0;
         uint32_t waitingTime = 0;
@@ -75,6 +76,7 @@ namespace Blinds {
             _motor.state = IDLE;
             _motor.direction = NONE;
             _motor.startTime = 0;
+            _motor.realPosition = (float) Settings::state.currentPosition;
 
             if (_motor.nextPosition > Settings::state.currentPosition)
                 if ((_motor.nextPosition - Settings::state.currentPosition) < TOL)
@@ -92,7 +94,7 @@ namespace Blinds {
 
         inline void update() {
             
-            uint32_t now = (uint32_t) millis();
+            uint32_t now = millis();
 
             switch (_motor.state) {
 
@@ -106,52 +108,43 @@ namespace Blinds {
                     if (_motor.waitingTime == 0) {_motor.waitingTime = now; break;}
 
                     /* Check if safe time was enough and start movement */
-                    if ((now - _motor.waitingTime) >= Defaults::MOTOR_SAFE_TIME*10) {
-
+                    if ((now - _motor.waitingTime) >= (uint32_t) Defaults::MOTOR_SAFE_TIME*10) {
                         _motor.state = MOVING;
-                        _motor.startTime = now;
-                        _motor.lastTime = now;
-                        _motor.waitingTime = now;
-                        _motor.statePublishTime = now;
-
-                        Commands::publishState();
-
-                        if (_motor.direction == UP) Relays::up();
-                        else if (_motor.direction == DOWN) Relays::down();
+                        _motor.startTime = 0;
+                        _motor.waitingTime = 0;
                     } break;
                 }
 
                 case MOVING: {
 
-                    /* Auxiliar variable */
-                    uint16_t currentPosition = Settings::state.currentPosition;
+                    /* Init all variables and state on first movement */
+                    if (_motor.startTime == 0) {
+                        _motor.startTime = now;
+                        _motor.lastTime = now;
+                        _motor.statePublishTime = now;
+                        _motor.realPosition = (float) Settings::state.currentPosition;
+                        (_motor.direction == UP) ? Relays::up() : Relays::down();
+                        break;
+                    }
 
-                    /* --- Publish new state --- */
+                    /* Publish new state */
                     if (now - _motor.statePublishTime >= 1000) { 
                         _motor.statePublishTime = now;
                         Commands::publishState();
                     }
 
-                    /* Init all variables and state on first movement */
-                    if (_motor.startTime == 0) {
-                        _motor.startTime = now;
-                        _motor.lastTime = now;
-                        if (_motor.direction == UP) Relays::up();
-                        else if (_motor.direction == DOWN) Relays::down();
-                        break;
-                    }
-
                     /* Calculate delta time and delta position to modify current position */
                     uint32_t dt = now - _motor.lastTime; _motor.lastTime = now;
-                    uint32_t totalTime = (uint32_t)((_motor.direction == DOWN) ? Settings::prefs.downTime : Settings::prefs.upTime) * 10;
-                    uint16_t movedPosition = (uint16_t)((dt * 10000) / totalTime);
+                    uint32_t totalTime = (_motor.direction == DOWN) ? Settings::prefs.downTime * 10 : Settings::prefs.upTime * 10;
+
+                    float movedPosition = ((float)dt * 10000.0f) / (float)totalTime;
 
                     /* Move current position (with excess checks) */
-                    if (_motor.direction == DOWN) (currentPosition > movedPosition) ? currentPosition -= movedPosition : currentPosition = 0;
-                    else if (_motor.direction == UP) (currentPosition < 10000) ? currentPosition += movedPosition : currentPosition = 10000;
+                    if (_motor.direction == UP) (_motor.realPosition < 10000.0f) ? _motor.realPosition += movedPosition : _motor.realPosition = 10000.0f;
+                    else if (_motor.direction == DOWN) (_motor.realPosition > movedPosition) ? _motor.realPosition -= movedPosition : _motor.realPosition = 0.0f;
 
                     /* Update currentPosition on global variable */
-                    Settings::state.currentPosition = currentPosition;
+                    Settings::state.currentPosition = (uint16_t) _motor.realPosition;
 
 
                     /* ~~~ STOP MOVEMENT CRITERIA ~~~ */
@@ -160,23 +153,19 @@ namespace Blinds {
                     if ((now - _motor.startTime) >= totalTime) stop();
 
                     // Position excess
-                    else if ((_motor.direction == UP && currentPosition >= _motor.nextPosition) || 
-                             (_motor.direction == DOWN && currentPosition <= _motor.nextPosition)) {
+                    else if ((_motor.direction == UP && _motor.realPosition >= _motor.nextPosition) || 
+                             (_motor.direction == DOWN && _motor.realPosition <= _motor.nextPosition)) {
 
-                        _motor.startTime = 0;
-                        _motor.state = STOPPING;
-                    }
+                        if (_motor.nextPosition == 0 || _motor.nextPosition == 10000) {
+                            _motor.state = STOPPING;
+                            _motor.startTime = now;
 
-                    break;
+                        } else stop();
+                    } break;
                 }
                     
                 case STOPPING: {
-
-                    if (_motor.startTime == 0) {_motor.startTime = now; break;}
-
-                    if ((now - _motor.startTime) >= STOPPING_TIME || 
-                        (_motor.nextPosition != 0 && _motor.nextPosition != 10000)) stop();
-
+                    if ((now - _motor.startTime) >= STOPPING_TIME) stop(); 
                     break;
                 }
             }
@@ -190,7 +179,6 @@ namespace Blinds {
             } else if ((Settings::state.currentPosition - targetPosition) < TOL) return;
 
             /* Determine new motor direction and position from current and target position */
-            targetPosition = ((targetPosition + 50) / 100) * 100;  // Round target_position
             Direction newDirection = (targetPosition > Settings::state.currentPosition) ? UP : DOWN;
             _motor.nextPosition = targetPosition;  // Save new next position on global state
 
@@ -198,9 +186,8 @@ namespace Blinds {
             else _motor.direction = newDirection;
 
             /* Set the new state for the next update function cycle */
-            if (_motor.state == IDLE) _motor.state = MOVING;
-            else if (_motor.state == WAITING) _motor.state = WAITING;
-            else if (_motor.state == MOVING) {_motor.state = WAITING; _motor.waitingTime = 0;}
+            if (_motor.state == IDLE) {_motor.state = MOVING; _motor.startTime = 0;}
+            else {_motor.state = WAITING; _motor.waitingTime = 0;}
         }
     }
 
