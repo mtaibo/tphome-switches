@@ -80,15 +80,13 @@ Replace `/dev/ttyUSB0` with your actual port (`/dev/cu.usbserial-*` on macOS, `C
 ### ESP8266 (TYWE3S)
 
 ```bash
-# Erase + build + flash
-esptool.py --chip esp8266 --port /dev/ttyUSB0 --baud 115200 erase_flash && \
+esptool --port /dev/ttyUSB0 erase_flash && \
 pio run -e blind_esp8266 -t upload --upload-port /dev/ttyUSB0
 ```
 
 ### BK7231N (CB3S) — blind
 
 ```bash
-# Erase + build + flash
 ltchiptool flash erase --device /dev/ttyUSB0 && \
 pio run -e blind_bk7231n -t upload --upload-port /dev/ttyUSB0
 ```
@@ -96,35 +94,49 @@ pio run -e blind_bk7231n -t upload --upload-port /dev/ttyUSB0
 ### BK7231N (T34) — light
 
 ```bash
-# Erase + build + flash
 ltchiptool flash erase --device /dev/ttyUSB0 && \
 pio run -e light_bk7231 -t upload --upload-port /dev/ttyUSB0
 ```
 
 ---
 
-## 6. Flash a pre-built binary
+## 6. Build a binary
 
-If you downloaded a `.bin` from the [releases page](https://github.com/mtaibo/tphome-firmware/releases) instead of building from source:
+To compile and copy the output binary to the project root as `firmware.bin`:
+
+```bash
+# ESP8266 — blind
+pio run -e blind_esp8266 && cp .pio/build/blind_esp8266/firmware.bin firmware.bin
+
+# BK7231N — blind
+pio run -e blind_bk7231n && cp .pio/build/blind_bk7231n/firmware.bin firmware.bin
+
+# BK7231N — light
+pio run -e light_bk7231 && cp .pio/build/light_bk7231/firmware.bin firmware.bin
+```
+
+---
+
+## 7. Flash a pre-built binary
+
+If you downloaded a `firmware.bin` from the [releases page](https://github.com/mtaibo/tphome-firmware/releases) or built one in the previous step:
 
 ### ESP8266
 
 ```bash
-esptool.py --chip esp8266 --port /dev/ttyUSB0 --baud 115200 erase_flash && \
-esptool.py --chip esp8266 --port /dev/ttyUSB0 --baud 115200 \
-  --flash_mode dout --flash_size 1MB \
-  write_flash 0x0 tphome-firmware_v2.0.0_blind_esp8266.bin
+esptool --port /dev/ttyUSB0 erase_flash && \
+esptool --port /dev/ttyUSB0 write_flash 0x0 firmware.bin
 ```
 
 ### BK7231N
 
 ```bash
 ltchiptool flash erase --device /dev/ttyUSB0 && \
-ltchiptool flash write --device /dev/ttyUSB0 tphome-firmware_v2.0.0_blind_bk7231n.bin
+ltchiptool flash write --device /dev/ttyUSB0 firmware.bin
 ```
 
 ---
 
-## 7. Subsequent updates via OTA
+## 8. Subsequent updates via OTA
 
 Once a device is running and connected to the network, all future updates are done wirelessly — no physical access needed. The `tphome-api` backend handles serving the binary and triggering the update via MQTT.
