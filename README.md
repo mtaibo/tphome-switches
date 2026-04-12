@@ -8,17 +8,17 @@ This repository contains the **firmware** layer: custom C++ code that runs direc
 
 ---
 
-## The TPHome Ecosystem
+## TPHome Ecosystem
 
 | Repository | Description | Status |
 |---|---|---|
-| **tphome-firmware** | Firmware for ESP8266 / BK7231N chips | ✅ Active |
-| `tphome-api` | FastAPI + MQTT backend on Raspberry Pi | 🔨 In progress |
-| `tphome` | Frontend + full system orchestration | 📋 Planned |
+| `tphome-firmware` | Firmware for ESP8266 / BK7231N chips | Active |
+| `tphome-api` | FastAPI + MQTT backend on Raspberry Pi | In progress |
+| `tphome` | Frontend + full system orchestration | Planned |
 
 ---
 
-## Why custom firmware?
+## Custom firmware
 
 Commercial smart home devices (Tuya, BSEED, Matismo...) come locked to vendor clouds with limited configurability. This firmware replaces the factory software to provide:
 
@@ -34,9 +34,9 @@ Commercial smart home devices (Tuya, BSEED, Matismo...) come locked to vendor cl
 
 | Device | Chip | Type | Status |
 |---|---|---|---|
-| Matismo WIP100 | TYWE3S (ESP8266) | Blind controller | ✅ Stable |
-| Matismo WIP100 | CB3S (BK7231N) | Blind controller | 🔨 In progress |
-| BSeed Melody M1 | T34 (BK7231N) | Light switch | 🔨 In progress |
+| Matismo WIP100 | TYWE3S (ESP8266) | Blind controller | Stable |
+| Matismo WIP100 | CB3S (BK7231N) | Blind controller | In progress |
+| BSeed Melody M1 | T34 (BK7231N) | Light switch | In progress |
 
 ---
 
