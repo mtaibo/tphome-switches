@@ -147,6 +147,7 @@ namespace Commands {
                     OTA::start(); 
                 } break;
 
+            case AdminCmd::GET_INFO: if (dataLen == 0) publishInfo(); break;
             case AdminCmd::REBOOT: if (dataLen == 0) Settings::reboot(); break;
             case AdminCmd::RESET_MEM: if (dataLen == 0) Settings::reset(); break;
 
