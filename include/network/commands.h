@@ -3,6 +3,7 @@
 
 #include "blinds.h"
 #include "mqtt.h"
+#include "wifi.h"
 #include "ota.h"
 
 namespace Commands {
@@ -26,8 +27,9 @@ namespace Commands {
             OTA       = 0xA0, // No payload
             REBOOT    = 0xA1, // No payload
             RESET_MEM = 0xA2, // No payload
-            SET_POS   = 0xA3, // uint16_t (0-10000)
-            SET_PREFS = 0xA4, // sizeof(Settings::Prefs) bytes
+            GET_INFO  = 0xA3, // No payload
+            SET_POS   = 0xA4, // uint16_t (0-10000)
+            SET_PREFS = 0xA5, // sizeof(Settings::Prefs) bytes
         };
 
     #elif defined(DEVICE_TYPE_LIGHT)
@@ -52,7 +54,6 @@ namespace Commands {
     void publishState() {
 
         /* Defining the State struct that is sent to mqtt client */
-
         struct __attribute__((packed)) State {
             uint8_t position;
             uint8_t state;
@@ -64,6 +65,42 @@ namespace Commands {
         Mqtt::_client.publish(Mqtt::topics.state,
                             reinterpret_cast<const uint8_t*>(&payload),
                             sizeof(State));
+    }
+
+    void publishInfo() {
+                
+        uint8_t MAC[6];
+        WiFi.macAddress(MAC);
+
+        DeviceID ID;
+
+        if (strlen(Settings::config.deviceID) >= 5) {
+            sscanf(Settings::config.deviceID, "%c%2hhu%2hhu", 
+                &ID.type, &ID.zone, &ID.device);
+        } else {
+            ID.type = 'A';
+            ID.zone = MAC[4];
+            ID.device = MAC[5];
+        }
+    
+        /* Info struct to provide current info stored on device*/
+        struct __attribute__((packed)) Info {
+            DeviceID id;                // 3 bytes
+            uint8_t padding;            // 1 byte for the struct aligment
+            uint8_t mac[2];             // 2 bytes
+            Settings::Prefs prefs;      // 7 bytes
+        } info;
+
+        info.id = ID;
+        info.mac[0] = MAC[4];
+        info.mac[1] = MAC[5];
+        info.prefs = Settings::prefs;
+
+        Mqtt::_client.publish(
+            Mqtt::topics.state,
+            reinterpret_cast<const uint8_t*>(&info),
+            sizeof(Info)
+        );
     }
 
     static void handleCmd(uint8_t cmd) {
