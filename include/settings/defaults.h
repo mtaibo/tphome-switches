@@ -7,9 +7,10 @@
 #include "credentials.h"
 
 namespace Sizes {
-    static constexpr uint8_t ID    =  8;
-    static constexpr uint8_t MQTT  = 16;
-    static constexpr uint8_t WIFI  = 32;
+    static constexpr uint8_t ID          =  8;
+    static constexpr uint8_t MQTT        = 16;
+    static constexpr uint8_t WIFI        = 32;
+    static constexpr uint8_t MQTT_BUFFER = 64;
 }
 
 namespace Defaults {

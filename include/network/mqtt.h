@@ -69,7 +69,7 @@ namespace Mqtt {
 
         /* Setup the mqtt server with its credentials, max buffer and callback function */
         _client.setServer(Settings::config.mqttIP, Settings::config.mqttPort);
-        _client.setBufferSize(sizeof(Settings::Prefs) + 64); 
+        _client.setBufferSize(Sizes::MQTT_BUFFER); 
         _client.setSocketTimeout(10); 
     }
 
