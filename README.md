@@ -12,8 +12,8 @@ This repository contains the **firmware** layer: custom C++ code that runs direc
 
 | Repository | Description | Status |
 |---|---|---|
-| `tphome-firmware` | Firmware for ESP8266 / BK7231N chips | Active |
-| `tphome-api` | FastAPI + MQTT backend on Raspberry Pi | In progress |
+| **tphome-firmware** | Firmware for ESP8266 / BK7231N chips | Active |
+| [`tphome-api`](https://github.com/mtaibo/tphome-api) | FastAPI + MQTT backend on Raspberry Pi | In progress |
 | `tphome` | Frontend + full system orchestration | Planned |
 
 ---
