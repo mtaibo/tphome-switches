@@ -63,12 +63,13 @@ Sent to the `/c` topic. Single-byte payloads.
 Sent to the `/a` topic. First byte is the command type, remaining bytes are the payload.
 
 | Byte | Command | Payload | Description |
-|---|---|---|---|
-| `0xA0` | `OTA` | none | Trigger OTA update from `http://{mqttIP}/firmware/{deviceID}.bin` |
+|---|---|---|---|---|
+| `0xA0` | `OTA` | 3 bytes (version) | Trigger OTA update from `http://{mqttIP}/firmware` |
 | `0xA1` | `REBOOT` | none | Soft reset the MCU |
 | `0xA2` | `RESET_MEM` | none | Wipe NVS flash and reboot (factory reset) |
-| `0xA3` | `SET_POS` | `uint16_t` (2 bytes, little-endian) | Override stored position (0–10000) |
-| `0xA4` | `SET_PREFS` | `sizeof(Prefs)` bytes | Write full `Prefs` struct to NVS |
+| `0xA3` | `GET_INFO` | none | Publish full device info struct (15 bytes) |
+| `0xA4` | `SET_POS` | `uint16_t` (2 bytes, little-endian) | Override stored position (0–10000) |
+| `0xA5` | `SET_PREFS` | `sizeof(Prefs)` bytes | Write full `Prefs` struct to NVS |
 
 The `Prefs` struct layout for blind devices (packed, little-endian):
 
@@ -157,7 +158,7 @@ On submit, the device saves the credentials to NVS and reboots. AP mode runs a b
 OTA is triggered by the `AdminCmd::OTA` command. The device fetches a binary from:
 
 ```
-http://{mqttIP}/firmware/{deviceID}.bin
+http://{mqttIP}/firmware
 ```
 
 The update URL is built from the stored MQTT IP, which means the backend HTTP server must be running on the same host as the MQTT broker. All LEDs are turned off during the update. On success the device reboots into the new firmware automatically.

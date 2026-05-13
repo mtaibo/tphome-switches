@@ -69,16 +69,16 @@ The code is organised in four layers, where each layer only depends on the ones 
 
 ```
 ┌─────────────────────────────────────────────┐
-│                  logic/                      │
+│                  logic/                     │
 │  buttons · actions · blinds · leds · lights │
 ├─────────────────────────────────────────────┤
-│                  network/                    │
+│                  network/                   │
 │  mqtt · commands · wifi · ota · ap          │
 ├─────────────────────────────────────────────┤
-│                  settings/                   │
+│                  settings/                  │
 │  defaults · mode · credentials              │
 ├─────────────────────────────────────────────┤
-│                  hardware/                   │
+│                  hardware/                  │
 │  esp8266/         bk7231n/ (in development) │
 │  pinout · driver_input · driver_output      │
 │  driver_wifi · hardware                     │
